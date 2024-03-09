@@ -29,23 +29,13 @@ b = convert_RGB_to_GRB((0, 0, 255))
 
 
 # LEDWALL
-
-# NOTE:
-# the nativE pixel indexing starts at 0
-# and zigzags from the input side (see back of the LED panel)
-# to the output side
-
-
-
-
-
 l = LedWall(nrows, ncols, GPIO_PIN)
+print("LedWall created.")
 
 while True:
     try:
-        # demo(numpix, ledwall, zero, colors)
         TextString("CIAO", l).display(0, r)
-        # print_word("CIAO", r, ledwall, zero)
+    
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
         break

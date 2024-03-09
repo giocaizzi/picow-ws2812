@@ -53,5 +53,5 @@ class TextString:
         self._build_string()
         for letter in self.encoded_text:
             for x, y in letter:
-                self.ledwall.set_pixel(self.ledwall.get_pixel_number(x, y), color)
+                self.ledwall.set_pixel(self.ledwall.indexer.get_pixel_number(x, y), color)
         self.ledwall.show()
