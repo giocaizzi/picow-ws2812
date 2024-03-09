@@ -8,13 +8,14 @@ class LedWall(Neopixel):
         try:
             # create the neopixel object
             super().__init__(nrows * ncols, 0, GPIO_PIN, mode="RGB")
+            # create the indexer
             self.indexer = Indexer(nrows, ncols, row_height=7)
         except Exception as e:
             raise e
-        
+        # set the default brightness
         self.brightness(self._default_brightness)
 
-    def exit(self):
+    def clear_all(self):
         self.clear()
         self.show()
 

@@ -1,5 +1,5 @@
 """basic alphabet for diplaying text on rgb led panel"""
-
+import time
 from picow_ledwall.text.fonts import BASEFONT
 
 # the letters are passed as which pixel to turn on
@@ -29,7 +29,7 @@ def encode_letter(char, x=0, y=0):
     for dy, rowstring in enumerate(BASEFONT[char]):
         for dx, letter in enumerate(rowstring):
             if letter == "1":
-                pixels.append((x + dx, x + dy))
+                pixels.append((x + dx, y + dy))
     return pixels
 
 
