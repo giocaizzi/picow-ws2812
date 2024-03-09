@@ -1,6 +1,6 @@
 """basic alphabet for diplaying text on rgb led panel"""
 
-from fonts import BASEFONT
+from picow_ledwall.text.fonts import BASEFONT
 
 # the letters are passed as which pixel to turn on
 # the pixel number is calculated from the x, y coordinates

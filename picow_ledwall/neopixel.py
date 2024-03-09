@@ -1,3 +1,9 @@
+"""neopixel module
+
+This module is from: https://github.com/blaz-r/pi_pico_neopixel
+Downloaded on: 9 March 2024
+Commit: d913fdf
+"""
 import array, time
 from machine import Pin
 import rp2
