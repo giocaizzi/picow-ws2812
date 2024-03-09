@@ -37,7 +37,7 @@ class TextString:
     """Text string to be displayed on the rgb led panel"""
 
     def __init__(self, text, ledwall):
-        self.text = text
+        self.text = text.upper()
         self.ledwall = ledwall
         self.encoded_text = []
 
