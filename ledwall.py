@@ -31,7 +31,11 @@ print("LedWall created.")
 
 while True:
     try:
-        l.display(TextString("CIAO", color=r))
+        message = TextString("CIAO", color=r)
+        # print(message.position)
+        # l.display(message)
+        # message.position = (message.position[0] - 5, message.position[1])
+        # l.display(message)
         # l.display(TextString("Mondo", position=(2, 0), color=g))
         # l.display(TextString("I am", position=(3, 1), color=b))
         # l.display(TextString("LED man!!!!!!!!!", color=r))
@@ -39,7 +43,10 @@ while True:
         # l.display(TextString("BTC: +10%", position=(0, 0), color=b))
         # l.display(TextString("08/03/2024", position=(0, 1), color=r))
         # Scroll(l, TextString("CIAO", color=r))
-        Scroll(l, TextString("This is some really long text", color=g), speed=5)
+        Scroll(l, TextString("CIAO", color=r), speed=5, direction="right")
+        Scroll(l, TextString("LONG", color=g), speed=5)
+        Scroll(l, TextString("TEXT", color=b), speed=5, direction="up")
+        Scroll(l, TextString("STRING", color=r), speed=5, direction="down")
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
         break
