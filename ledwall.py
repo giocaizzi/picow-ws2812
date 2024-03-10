@@ -34,15 +34,17 @@ print("LedWall created.")
 
 while True:
     try:
-        TextString("CIAO", l).display(2, r)
+        l.display(TextString("CIAO", color=r))
         time.sleep(1)
-        l.clear_all()
-        TextString("Bella", l).display(2, g)
+        l.clear()
+        l.display(TextString("Mondo", color=g))
         time.sleep(1)
-        l.clear_all()
-        TextString("I am", l).display(2, b)
+        l.clear()
+        l.display(TextString("I am", color=b))
         time.sleep(1)
-        l.clear_all()
+        l.clear()
+        l.display(TextString("LED", color=r))
+        time.sleep(1)
 
     except KeyboardInterrupt:
         print("KeyboardInterrupt")

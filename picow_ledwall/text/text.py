@@ -1,4 +1,5 @@
 """basic alphabet for diplaying text on rgb led panel"""
+
 import time
 from picow_ledwall.text.fonts import BASEFONT
 
@@ -36,22 +37,28 @@ def encode_letter(char, x=0, y=0):
 class TextString:
     """Text string to be displayed on the rgb led panel"""
 
-    def __init__(self, text, ledwall):
+    def __init__(self, text, position=(0, 0), color=(255, 255, 255)):
         self.text = text.upper()
-        self.ledwall = ledwall
-        self.encoded_text = []
+        self.pixels = []
+        self._position = position
+        self._color = color
+        self._build_string()
+
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, value):
+        self._position = value
+        self._build_string()
 
     def _build_string(self):
         """build string from letters"""
-        x_offset = 0
+        # reset pixels
+        self.pixels = []
+        # position
+        x_offset = 0 + self.position[0]
         for letter in self.text:
-            self.encoded_text.append(encode_letter(letter, x_offset))
+            self.pixels.append((encode_letter(letter, x=x_offset), self._color))
             x_offset += CHAR_WIDTH
-
-    def display(self, x, color):
-        """display the text on the ledwall"""
-        self._build_string()
-        for letter in self.encoded_text:
-            for x, y in letter:
-                self.ledwall.set_pixel(self.ledwall.indexer.get_pixel_number(x, y), color)
-        self.ledwall.show()

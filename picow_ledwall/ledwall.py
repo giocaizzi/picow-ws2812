@@ -15,6 +15,13 @@ class LedWall(Neopixel):
         # set the default brightness
         self.brightness(self._default_brightness)
 
+    def display(self, obj):
+        """display pixels on the led wall"""
+        for pixel, color in obj.pixels:
+            for x, y in pixel:
+                self.set_pixel(self.indexer.get_pixel_number(x, y), color)
+        self.show()
+
     def clear_all(self):
         self.clear()
         self.show()
