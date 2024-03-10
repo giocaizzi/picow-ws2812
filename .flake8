@@ -1,12 +1,15 @@
 [flake8]
 exclude =
+    src/picow_ledwall/text/fonts.py,
+    src/picow_ledwall/neopixel.py,
     tests,
     .github,
     .vscode,
     docs,
     docsrc,
     temp,
-    ./build
+    ./build,
+    dist,
 require-plugins =
     flake8-rst-docstrings
 # flake8 and black compatibility
