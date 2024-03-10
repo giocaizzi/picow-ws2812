@@ -1,6 +1,5 @@
 """basic alphabet for diplaying text on rgb led panel"""
 
-import time
 from picow_ledwall.text.fonts import BASEFONT
 
 # the letters are passed as which pixel to turn on
@@ -59,6 +58,9 @@ class TextString:
         self.pixels = []
         # position
         x_offset = 0 + self.position[0]
+        y_offset = 0 + self.position[1]
         for letter in self.text:
-            self.pixels.append((encode_letter(letter, x=x_offset), self._color))
+            self.pixels.append(
+                (encode_letter(letter, x=x_offset, y=y_offset), self._color)
+            )
             x_offset += CHAR_WIDTH

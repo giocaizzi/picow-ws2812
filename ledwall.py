@@ -37,10 +37,11 @@ while True:
         l.display(TextString("CIAO", color=r))
         time.sleep(1)
         l.clear()
-        l.display(TextString("Mondo", color=g))
+        l.display(TextString("Mondo", position=(2, 0), color=g))
         time.sleep(1)
         l.clear()
-        l.display(TextString("I am", color=b))
+        # y position is not implemented
+        l.display(TextString("I am", position=(3, 1), color=b))
         time.sleep(1)
         l.clear()
         l.display(TextString("LED", color=r))

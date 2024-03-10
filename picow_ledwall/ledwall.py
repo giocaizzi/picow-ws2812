@@ -1,3 +1,4 @@
+"""ledwall module"""
 from picow_ledwall.neopixel import Neopixel
 
 
@@ -44,3 +45,6 @@ class Indexer:
             return x * self.nrows + y
         else:
             return x * self.nrows + (self.nrows - 1 - y)
+        
+
+
