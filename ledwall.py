@@ -1,5 +1,3 @@
-import time
-
 from picow_ledwall.ledwall import LedWall
 from picow_ledwall.text import TextString
 
@@ -9,8 +7,6 @@ GPIO_PIN = 28
 # Define the array size
 nrows = 8
 ncols = 32
-numpix = nrows * ncols
-
 
 # Define the colors
 
@@ -35,18 +31,12 @@ print("LedWall created.")
 while True:
     try:
         l.display(TextString("CIAO", color=r))
-        time.sleep(1)
-        l.clear()
         l.display(TextString("Mondo", position=(2, 0), color=g))
-        time.sleep(1)
-        l.clear()
-        # y position is not implemented
         l.display(TextString("I am", position=(3, 1), color=b))
-        time.sleep(1)
-        l.clear()
-        l.display(TextString("LED", color=r))
-        time.sleep(1)
-
+        l.display(TextString("LED man!!!!!!!!!", color=r))
+        l.display(TextString("OutofRange", position=(0, 5), color=g))
+        l.display(TextString("BTC: +10%", position=(0, 0), color=b))
+        l.display(TextString("08/03/2024", position=(0, 1), color=r))
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
         break
@@ -54,5 +44,5 @@ while True:
         print(e)
         break
 # exit
-l.clear_all()
+l.quit()
 print("Finished.")

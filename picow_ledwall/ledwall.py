@@ -1,5 +1,8 @@
 """ledwall module"""
+
+import time
 from picow_ledwall.neopixel import Neopixel
+from picow_ledwall.text import TextString
 
 
 class LedWall(Neopixel):
@@ -15,16 +18,37 @@ class LedWall(Neopixel):
             raise e
         # set the default brightness
         self.brightness(self._default_brightness)
+        # show welcome message
+        self.display(TextString("Hello!", color=(0, 255, 0)), wait=2)
 
-    def display(self, obj):
-        """display pixels on the led wall"""
+    def display(self, obj, wait=1):
+        """display object on the led wall
+
+        Args:
+            obj (object): object to display, object must have a
+                `pixels` attribute
+            wait (int, optional): time to wait before clearing the display.
+                Defaults to 1.
+        """
         for pixel, color in obj.pixels:
             for x, y in pixel:
-                self.set_pixel(self.indexer.get_pixel_number(x, y), color)
+                try:
+                    self.set_pixel(self.indexer.get_pixel_number(x, y), color)
+                # ignore out of range pixels
+                except IndexError:
+                    pass
+                except Exception as e:
+                    raise e
         self.show()
-
-    def clear_all(self):
+        time.sleep(wait)
         self.clear()
+
+    def quit(self):
+        """clear the display and release the GPIO"""
+        self.display(TextString("Bye", color=(0, 0, 255)), wait=0.5)
+        self.display(TextString("Bye Bye!", color=(0, 255, 0)), wait=0.5)
+        # show the clear display
+        print("Clearing the display...")
         self.show()
 
 
@@ -45,6 +69,3 @@ class Indexer:
             return x * self.nrows + y
         else:
             return x * self.nrows + (self.nrows - 1 - y)
-        
-
-
