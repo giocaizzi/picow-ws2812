@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "picow-ledwall"
+version = "0.1.0"
+description = ""
+authors = ["giocaizzi <giocaizzi@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+pytest-cov = "^4.1.0"
+black = "^24.2.0"
+flake8 = "^7.0.0"
+flake8-rst-docstrings = "^0.3.0"
+
+[tool.black]
+exclude = 'src/picow_ledwall/text/fonts.py'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

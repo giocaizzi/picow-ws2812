@@ -53,7 +53,7 @@ class TextString:
         self._build_string()
 
     def __len__(self):
-        return len(self.text)*CHAR_WIDTH
+        return len(self.text) * CHAR_WIDTH
 
     def _build_string(self):
         """build string from letters"""
