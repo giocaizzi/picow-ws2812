@@ -45,10 +45,12 @@ class LedWall(Neopixel):
 
     def quit(self):
         """clear the display and release the GPIO"""
+        self.clear()
+        self.show()
+        # show the goodbye message
         self.display(TextString("Bye", color=(0, 0, 255)), wait=0.5)
         self.display(TextString("Bye Bye!", color=(0, 255, 0)), wait=0.5)
         # show the clear display
-        print("Clearing the display...")
         self.show()
 
 
