@@ -1,5 +1,7 @@
 """basic alphabet for diplaying text on rgb led panel"""
 
+from typing import Tuple
+
 from picow_ledwall.text.fonts import BASEFONT
 
 # the letters are passed as which pixel to turn on
@@ -9,7 +11,7 @@ CHAR_WIDTH = 5
 CHAR_HEIGHT = 7
 
 
-def encode_letter(char, x=0, y=0):
+def encode_letter(char, x: int = 0, y: int = 0):
     """encode letter as list of pixel numbers that should be turned on
 
     trasforms letters in (x,y) coordinates of the pixels that should be turned
@@ -34,9 +36,25 @@ def encode_letter(char, x=0, y=0):
 
 
 class TextString:
-    """Text string to be displayed on the rgb led panel"""
+    """Text string to be displayed on the rgb led panel
 
-    def __init__(self, text, position=(0, 0), color=(255, 255, 255)):
+    Args:
+        text (str): text to display
+        position (Tuple, optional): position of the text on the panel.
+            Defaults to (0, 0).
+        color (Tuple, optional): color of the text. Defaults to (255, 255, 255).
+
+    Attributes:
+        text (str): text to display
+        pixels (list): list of pixels that should be turned on
+        position (Tuple): position of the text on the panel
+        color (Tuple): color of the text
+    """
+
+    def __init__(
+        self, text: str, position: Tuple = (0, 0), color: Tuple = (255, 255, 255)
+    ):
+        """initialize the text string"""
         self.text = text.upper()
         self.pixels = []
         self._position = position
@@ -44,15 +62,18 @@ class TextString:
         self._build_string()
 
     @property
-    def position(self):
+    def position(self) -> Tuple:
+        """position of the text on the panel"""
         return self._position
 
     @position.setter
-    def position(self, value):
+    def position(self, value) -> None:
+        """set the position of the text on the panel"""
         self._position = value
         self._build_string()
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """length of the text"""
         return len(self.text) * CHAR_WIDTH
 
     def _build_string(self):

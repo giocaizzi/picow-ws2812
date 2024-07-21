@@ -1,6 +1,7 @@
 """ledwall module"""
 
 import time
+
 from picow_ledwall.neopixel import Neopixel
 from picow_ledwall.text import TextString
 
@@ -21,7 +22,7 @@ class LedWall(Neopixel):
         # show welcome message
         self.display(TextString("Hello!", color=(0, 255, 0)), wait=2)
 
-    def display(self, obj, wait=1):
+    def display(self, obj, wait: float = 1.0):
         """display object on the led wall
 
         Args:

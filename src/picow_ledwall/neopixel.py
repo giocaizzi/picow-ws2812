@@ -5,9 +5,11 @@ Downloaded on: 9 March 2024
 Commit: d913fdf
 """
 
-import array, time
-from machine import Pin
+import array
+import time
+
 import rp2
+from machine import Pin
 
 
 # PIO state machine for RGB. Pulls 24 bits (rgb -> 3 * 8bit) automatically

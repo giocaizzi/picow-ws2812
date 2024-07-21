@@ -11,12 +11,46 @@ python = "^3.10"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
 pytest-cov = "^4.1.0"
-black = "^24.2.0"
-flake8 = "^7.0.0"
-flake8-rst-docstrings = "^0.3.0"
+pre-commit = "^3.7.1"
 
 [tool.black]
-exclude = 'src/picow_ledwall/text/fonts.py'
+force-exclude = 'src/picow_ledwall/text/fonts.py'
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
+
+[tool.coverage.report]
+include = ["src/picow_ledwall/*"]
+
+[tool.isort]
+profile = "black"
+
+[tool.flake8]
+extend-ignore = [
+    # black compatibility
+    # https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#minimal-configuration
+    "E203",
+    "E701",
+    # RST201, RST203, RST301 - Google Python Style docstrings cause errors (ref:??)
+    "RST201",
+    "RST203",
+    "RST301",
+]
+exclude = [
+    # neopixel library
+    "src/picow_ledwall/text/fonts.py",
+    "src/picow_ledwall/neopixel.py",
+    # usual
+    "tests/*",
+    ".github/*",
+    ".vscode/*",
+    "docs/*",
+    "docsrc/*",
+    "temp/*",
+    " ./build/*",
+]
+max-line-length = 88
 
 [build-system]
 requires = ["poetry-core"]
