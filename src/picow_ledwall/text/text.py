@@ -1,14 +1,14 @@
 """basic alphabet for diplaying text on rgb led panel"""
 
-from typing import Tuple
+from typing import Tuple, List
 
+from picow_ledwall.base import Pixel
+from picow_ledwall.base import CHAR_WIDTH
+from picow_ledwall.base import CHAR_HEIGHT
 from picow_ledwall.text.fonts import BASEFONT
 
 # the letters are passed as which pixel to turn on
 # the pixel number is calculated from the x, y coordinates
-
-CHAR_WIDTH = 5
-CHAR_HEIGHT = 7
 
 
 def encode_letter(char, x: int = 0, y: int = 0):
@@ -55,8 +55,8 @@ class TextString:
         self, text: str, position: Tuple = (0, 0), color: Tuple = (255, 255, 255)
     ):
         """initialize the text string"""
-        self.text = text.upper()
-        self.pixels = []
+        self.text: str = text.upper()
+        self.pixels: List[Tuple] = []
         self._position = position
         self._color = color
         self._build_string()
