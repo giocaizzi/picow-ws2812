@@ -4,6 +4,7 @@ from picow_ledwall.base import Pixel
 
 
 def test_pixel_initialization():
+    """test the initialization of a pixel"""
     pixel = Pixel(1, 2, (255, 0, 0))
     assert pixel.x == 1
     assert pixel.y == 2
@@ -11,6 +12,7 @@ def test_pixel_initialization():
 
 
 def test_pixel_setters():
+    """test the setters of a pixel"""
     pixel = Pixel(1, 2, (255, 0, 0))
     pixel.x = 10
     pixel.y = 20
@@ -21,6 +23,7 @@ def test_pixel_setters():
 
 
 def test_pixel_move():
+    """test the movement of a pixel"""
     pixel = Pixel(1, 2, (255, 0, 0))
     pixel.move(5, 5)
     assert pixel.x == 6

@@ -75,7 +75,7 @@ class Pixel:
         """
         self._color = color
 
-    def move(self, dx: int, dy: int):
+    def move(self, dx: int, dy: int) -> None:
         """Move pixel."""
         self.x += dx
         self.y += dy
@@ -112,7 +112,7 @@ class Char:
         if len(char) > 1:
             raise ValueError("Char must be a single character")
 
-        self.char = char
+        self.char = char.upper()
         self.color = color
 
         # dimensions of the char
@@ -120,19 +120,13 @@ class Char:
         self.height = CHAR_HEIGHT
 
         # create pixes
-        self._create_pixels(char)
+        self._create_pixels()
 
-    def _create_pixels(self, char: str):
+    def _create_pixels(self) -> None:
         """Encode char to Pixel.
 
         Reads the font from the pixel font
         and creates a list of pixels.
-
-        Args:
-            char (str): char to encode
-
-        Returns:
-            str: encoded char
 
         Raises:
             ValueError: if char not in basefont
@@ -140,14 +134,14 @@ class Char:
             ValueError: if char has wrong width
         """
 
-        if char not in BASEFONT:
+        if self.char not in BASEFONT:
             raise ValueError(f"Letter {self.char} not in basefont")
-        if len(BASEFONT[char]) != self.height:
+        if len(BASEFONT[self.char]) != self.height:
             raise ValueError(f"Letter {self.char} has wrong height")
-        if len(BASEFONT[char][0]) != self.width:
+        if len(BASEFONT[self.char][0]) != self.width:
             raise ValueError(f"Letter {self.char} has wrong width")
 
-        for dy, rowstring in enumerate(BASEFONT[char]):
+        for dy, rowstring in enumerate(BASEFONT[self.char]):
             for dx, letter in enumerate(rowstring):
                 if letter == "1":
                     self.pixels.append(Pixel(dx, dy, self.color))
