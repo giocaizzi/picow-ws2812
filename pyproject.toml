@@ -12,6 +12,7 @@ python = "^3.10"
 pytest = "^8.1.1"
 pytest-cov = "^4.1.0"
 pre-commit = "^3.7.1"
+ipykernel = "^6.29.5"
 
 [tool.black]
 force-exclude = 'src/picow_ledwall/text/fonts.py'
