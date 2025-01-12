@@ -928,7 +928,7 @@ ptyprocess = ">=0.5"
 
 [[package]]
 name = "picow-ws2812-core"
-version = "0.1.0a3"
+version = "0.1.0a4"
 description = ""
 optional = false
 python-versions = "^3.9"
@@ -941,7 +941,7 @@ url = "libs/picow-ws2812-core"
 
 [[package]]
 name = "picow-ws2812-devtools"
-version = "0.1.0a1"
+version = "0.1.0a2"
 description = ""
 optional = false
 python-versions = "^3.9"

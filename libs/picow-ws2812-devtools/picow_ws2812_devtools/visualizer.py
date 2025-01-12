@@ -16,11 +16,16 @@ class LedWallVisualizer:
             ncols (int): Number of columns.
             grid (np.ndarray): Grid of pixels.
             objects (List[Text]): List of Text objects.
+            fig (plt.Figure): Matplotlib figure.
+            ax (plt.Axes): Matplotlib axes.
         """
         self.nrows = nrows
         self.ncols = ncols
         self.grid = np.zeros((nrows, ncols, 3), dtype=int)
         self.objects: List[Union[Object, ComplexObject]] = []
+        self.fig, self.ax = plt.subplots()
+        # quickfix in notebooks init shows the figure (?!?)
+        plt.close()
 
     def add_object(self, obj):
         """Add a Text object to the LED wall."""
@@ -55,10 +60,10 @@ class LedWallVisualizer:
         """Display the LED wall."""
         # create Array-like object from x, y, color
         self._render()
-        plt.imshow(self.grid)
-        plt.show()
+        self.ax.imshow(self.grid)
         if autoclear:
             self._clear_grid()
+        return self.fig
 
     def _clear_grid(self):
         """Clear the LED wall."""
