@@ -1,6 +1,6 @@
 """base classes."""
 
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Union
 
 
 CHAR_WIDTH = 5
@@ -191,3 +191,34 @@ class Collection:
     def __str__(self) -> str:
         """Return string representation of complex object."""
         return f"{self.__class__.__name__}(bbox={self.bbox})"
+
+
+class View:
+    """Base class for a view.
+
+    A view is what is displayed on the ledwall.
+    during the show() method, the view is displayed on the ledwall.
+    """
+
+    def __init__(self, objecs: List[Union[BaseObject, Collection]]):
+        """Create a View object.
+
+        Args:
+            objects (List[Union[Object, ComplexObject]]): objects
+        """
+        self.objects = objecs
+
+
+class Sequence:
+    """Base class for a sequence.
+
+    A sequence is a collection of views.
+    """
+
+    def __init__(self, views: List[View]):
+        """Create a Sequence object.
+
+        Args:
+            views (List[View]): views
+        """
+        self.views = views
