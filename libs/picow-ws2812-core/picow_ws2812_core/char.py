@@ -22,6 +22,8 @@ class Char(Object):
         self,
         char: str,
         color: Tuple[int, int, int],
+        x0: int = 0,
+        y0: int = 0,
         char_width_offset: Optional[int] = None,
     ):
         """Create a Char object.
@@ -50,8 +52,10 @@ class Char(Object):
         self.height = CHAR_HEIGHT
 
         # create pixes
-        self._create_pixels()
+        self._create_pixels(x0, y0)
 
+        # if char_width_offset is not None, move the char
+        # to the right so to compose chars into a text
         if char_width_offset is not None:
             if not isinstance(char_width_offset, int):
                 raise ValueError("Char width offset must be an integer")
@@ -61,7 +65,7 @@ class Char(Object):
                 for pixel in self.pixels:
                     pixel.x += char_width_offset * CHAR_WIDTH
 
-    def _create_pixels(self) -> None:
+    def _create_pixels(self, x0: int, y0: int) -> None:
         """Encode char to Pixel.
 
         Reads the font from the pixel font
@@ -83,4 +87,4 @@ class Char(Object):
         for dy, rowstring in enumerate(BASEFONT[self.char]):
             for dx, letter in enumerate(rowstring):
                 if letter == "1":
-                    self.add_pixel(Pixel(dx, dy, self.color))
+                    self.add_pixel(Pixel(x0 + dx, y0 + dy, self.color))
