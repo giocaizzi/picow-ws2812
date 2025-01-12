@@ -28,5 +28,5 @@ class LedWallVisualizer:
         """Render a sequence."""
         fig, ax = plt.subplots()
         for view in sequence.views:
-            ax.imshow(view.get_grid())
+            self.render_view(view)
             plt.pause(1)
