@@ -23,6 +23,33 @@ pre-commit = "^3.7.1"
 ipykernel = "^6.29.5"
 picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true }
 
+# test configuration
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
+
+
+# format and code quality
+
+[tool.black]
+force-exclude = 'libs/picow-ws28128-core/fonts.py'
+
+[tool.isort]
+profile = "black"
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = [
+    # black compatibility
+    # https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#minimal-configuration
+    "E203",
+    "E701",
+    # RST201, RST203, RST301 - Google Python Style docstrings cause errors (ref:??)
+    "RST201",
+    "RST203",
+    "RST301",
+]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
