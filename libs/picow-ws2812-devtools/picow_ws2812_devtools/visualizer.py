@@ -28,7 +28,7 @@ class LedWallVisualizer:
         """Render a grid."""
         ax.imshow(grid)
 
-    def render_sequence(self, sequence: StaticSequence):
+    def render_sequence(self, sequence: StaticSequence, interval: int = 500):
         """Render a sequence."""
         fig, ax = plt.subplots()
         frames = sequence.get_frames()
@@ -38,7 +38,7 @@ class LedWallVisualizer:
             im.set_data(frame)
             return im,  # Return a list containing the im object
 
-        ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=10)
+        ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
 
         plt.show()
 
