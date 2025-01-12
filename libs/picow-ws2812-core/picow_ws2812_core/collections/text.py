@@ -3,11 +3,11 @@ from picow_ws2812_core.base import CHAR_WIDTH
 
 from typing import List, Tuple, Optional
 
-from picow_ws2812_core.base import ComplexObject
-from picow_ws2812_core.char import Char
+from picow_ws2812_core.base import Collection, BaseObject
+from picow_ws2812_core.objects.char import Char
 
 
-class Text(ComplexObject):
+class Text(Collection):
     """Text string.
 
     A Text object is an easy representation of a text string.
@@ -43,10 +43,9 @@ class Text(ComplexObject):
 
         # all objects of this complex object
         # are Char objects
-        for char in self._create_objects(x0=x0, y0=y0):
-            self.add_object(char)
+        self.add_objects(self._create_objects(x0=x0, y0=y0))
 
-    def _create_objects(self, x0: int, y0: int) -> List[Char]:
+    def _create_objects(self, x0: int, y0: int) -> List[BaseObject]:
         """Create a list of Char objects.
 
         Returns:

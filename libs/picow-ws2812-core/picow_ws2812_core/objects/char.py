@@ -1,11 +1,11 @@
-from picow_ws2812_core.base import CHAR_HEIGHT, CHAR_WIDTH, Object, Pixel
+from picow_ws2812_core.base import CHAR_HEIGHT, CHAR_WIDTH, BaseObject, Pixel
 from picow_ws2812_core.fonts import BASEFONT
 
 
 from typing import Tuple, Optional
 
 
-class Char(Object):
+class Char(BaseObject):
     """Char object.
 
     A Char object is a representation of a single character in

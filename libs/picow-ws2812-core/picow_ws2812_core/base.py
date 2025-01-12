@@ -1,7 +1,6 @@
 """base classes."""
 
-from typing import List, Tuple
-from abc import ABC, abstractmethod
+from typing import List, Tuple, Optional
 
 
 CHAR_WIDTH = 5
@@ -90,7 +89,7 @@ class Pixel:
         return f"Pixel({self.x}, {self.y}, {self.color})"
 
 
-class Object(ABC):
+class BaseObject:
     """Base class for all objects displayed on the ledwall.
 
     Attributes:
@@ -116,11 +115,6 @@ class Object(ABC):
         for pixel in self.pixels:
             pixel.move(dx, dy)
 
-    @abstractmethod
-    def _create_pixels(self) -> None:
-        """Create pixels for the object."""
-        pass
-
     @property
     def bbox(self) -> Tuple[int, int, int, int]:
         """Return bounding box of object.
@@ -143,19 +137,19 @@ class Object(ABC):
         return f"{self.__class__.__name__}(bbox={self.bbox})"
 
 
-class ComplexObject(ABC):
-    """Base class for complex objects.
+class Collection:
+    """Base class for a collection of objects.
 
-    A complex object is a collection of objects that
-    function as a single object."""
+    A collection functions as a single object.
+    """
 
-    objects: List[Object] = []
+    objects: List[BaseObject] = []
 
     def __init__(self):
         """Create a ComplexObject object."""
         self.objects = []
 
-    def add_object(self, obj: Object) -> None:
+    def add_object(self, obj: BaseObject) -> None:
         """Add an object to the complex object.
 
         Args:
@@ -163,10 +157,14 @@ class ComplexObject(ABC):
         """
         self.objects.append(obj)
 
-    @abstractmethod
-    def _create_objects(self) -> None:
-        """Create objects for the complex object."""
-        pass
+    def add_objects(self, objects: List[BaseObject]) -> None:
+        """Add objects to the complex object.
+
+        Args:
+            objects (List[Object]): objects
+        """
+        for obj in objects:
+            self.add_object(obj)
 
     @property
     def bbox(self) -> Tuple[int, int, int, int]:
@@ -189,7 +187,7 @@ class ComplexObject(ABC):
     def __repr__(self) -> str:
         """Return string representation of complex object."""
         return self.__str__()
-    
+
     def __str__(self) -> str:
         """Return string representation of complex object."""
         return f"{self.__class__.__name__}(bbox={self.bbox})"
