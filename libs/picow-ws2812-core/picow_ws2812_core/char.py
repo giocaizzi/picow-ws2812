@@ -2,14 +2,14 @@ from picow_ws2812_core.base import CHAR_HEIGHT, CHAR_WIDTH, Object, Pixel
 from picow_ws2812_core.fonts import BASEFONT
 
 
-from typing import Tuple
+from typing import Tuple, Optional
 
 
 class Char(Object):
     """Char object.
 
-    A Char object is a representation of a single character.
-    It contains the character, the color and a list of pixels.
+    A Char object is a representation of a single character in
+    a string. A list of chars is used to create a text object.
 
     Attributes:
         char (str): character
@@ -18,7 +18,12 @@ class Char(Object):
         height (int): height of character
     """
 
-    def __init__(self, char: str, color: Tuple[int, int, int]):
+    def __init__(
+        self,
+        char: str,
+        color: Tuple[int, int, int],
+        char_width_offset: Optional[int] = None,
+    ):
         """Create a Char object.
 
         Create a Char object with a character and a color.
@@ -26,6 +31,9 @@ class Char(Object):
         Args:
             char (str): character
             color (Tuple[int, int, int]): color
+            char_width_offset (int): x-offset for the char, so to compose
+                chars into a text. This is intended as a integer multiple of
+                default `CHAR_WIDTH`. Default is None.
 
         Raises:
             ValueError: if char is not a single character
@@ -43,6 +51,15 @@ class Char(Object):
 
         # create pixes
         self._create_pixels()
+
+        if char_width_offset is not None:
+            if not isinstance(char_width_offset, int):
+                raise ValueError("Char width offset must be an integer")
+            if char_width_offset < 0:
+                raise ValueError("Char width offset must be positive")
+            else:
+                for pixel in self.pixels:
+                    pixel.x += char_width_offset * CHAR_WIDTH
 
     def _create_pixels(self) -> None:
         """Encode char to Pixel.

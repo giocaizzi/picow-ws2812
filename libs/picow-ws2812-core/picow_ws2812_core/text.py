@@ -7,9 +7,9 @@ from picow_ws2812_core.char import Char
 
 
 class Text:
-    """Text object.
+    """Text string.
 
-    A Text object is an easy representation of a text.
+    A Text object is an easy representation of a text string.
     It contains the text, the color and a list of chars objects.
 
     Attributes:
@@ -39,9 +39,7 @@ class Text:
         """
         chars = []
         for i, char in enumerate(self.text):
-            chars.append(Char(char, self.color))
-            for pixel in chars[i].pixels:
-                pixel.x += i * CHAR_WIDTH
+            chars.append(Char(char, self.color, char_width_offset=i))
         return chars
 
     def move(self, dx: int, dy: int):
