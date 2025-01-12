@@ -41,5 +41,3 @@ class LedWallVisualizer:
         ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
 
         plt.show()
-
-        return ani
