@@ -928,7 +928,7 @@ ptyprocess = ">=0.5"
 
 [[package]]
 name = "picow-ws2812-core"
-version = "0.1.0a2"
+version = "0.1.0a3"
 description = ""
 optional = false
 python-versions = "^3.9"

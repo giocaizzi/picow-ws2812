@@ -1,6 +1,7 @@
 """base classes."""
 
 from typing import List, Tuple
+from abc import ABC, abstractmethod
 
 
 CHAR_WIDTH = 5
@@ -81,7 +82,7 @@ class Pixel:
         self.y += dy
 
 
-class Object:
+class Object(ABC):
     """Base class for all objects displayed on the ledwall.
 
     Attributes:
@@ -106,3 +107,52 @@ class Object:
         """Move object."""
         for pixel in self.pixels:
             pixel.move(dx, dy)
+
+    @abstractmethod
+    def _create_pixels(self) -> None:
+        """Create pixels for the object."""
+        pass
+
+    @property
+    def bbox(self) -> Tuple[int, int, int, int]:
+        """Return bounding box of object.
+
+        Returns:
+            Tuple[int, int, int, int]: x0, y0, x1, y1
+        """
+        x0 = min([pixel.x for pixel in self.pixels])
+        y0 = min([pixel.y for pixel in self.pixels])
+        x1 = max([pixel.x for pixel in self.pixels])
+        y1 = max([pixel.y for pixel in self.pixels])
+        return x0, y0, x1, y1
+
+
+class ComplexObject(ABC):
+    """Base class for complex objects.
+
+    A complex object is a collection of objects that
+    function as a single object."""
+
+    objects: List[Object] = []
+
+    def __init__(self):
+        """Create a ComplexObject object."""
+        self.objects = []
+
+    def add_object(self, obj: Object) -> None:
+        """Add an object to the complex object.
+
+        Args:
+            obj (Object): object
+        """
+        self.objects.append(obj)
+
+    @abstractmethod
+    def _create_objects(self) -> None:
+        """Create objects for the complex object."""
+        pass
+
+    def move(self, dx: int, dy: int) -> None:
+        """Move complex object."""
+        for obj in self.objects:
+            obj.move(dx, dy)

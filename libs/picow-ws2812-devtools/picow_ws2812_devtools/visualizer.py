@@ -3,6 +3,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from picow_ws2812_core.base import Object, ComplexObject
+
 
 class LedWallVisualizer:
     def __init__(self, nrows: int, ncols: int):
@@ -31,9 +33,15 @@ class LedWallVisualizer:
     def _render(self):
         """Render the Text objects on the grid (led wall)."""
         for obj in self.objects:
-            # text
-            for char in obj.chars:
-                for pixel in char.pixels:
+            # these objects can be of two types: Object or ComplexObject
+            if isinstance(obj, ComplexObject):
+                for subobj in obj.objects:
+                    for pixel in subobj.pixels:
+                        x, y, color_tuple = pixel.x, pixel.y, pixel.color
+                        if 0 <= y < self.nrows and 0 <= x < self.ncols:
+                            self.grid[y, x] = color_tuple
+            elif isinstance(obj, Object):
+                for pixel in obj.pixels:
                     x, y, color_tuple = pixel.x, pixel.y, pixel.color
                     if 0 <= y < self.nrows and 0 <= x < self.ncols:
                         self.grid[y, x] = color_tuple
