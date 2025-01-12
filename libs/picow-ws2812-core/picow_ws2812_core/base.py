@@ -81,6 +81,14 @@ class Pixel:
         self.x += dx
         self.y += dy
 
+    def __repr__(self) -> str:
+        """Return string representation of pixel."""
+        return self.__str__()
+
+    def __str__(self) -> str:
+        """Return string representation of pixel."""
+        return f"Pixel({self.x}, {self.y}, {self.color})"
+
 
 class Object(ABC):
     """Base class for all objects displayed on the ledwall.
@@ -126,6 +134,14 @@ class Object(ABC):
         y1 = max([pixel.y for pixel in self.pixels])
         return x0, y0, x1, y1
 
+    def __repr__(self) -> str:
+        """Return string representation of object."""
+        return self.__str__()
+
+    def __str__(self) -> str:
+        """Return string representation of object."""
+        return f"{self.__class__.__name__}(bbox={self.bbox})"
+
 
 class ComplexObject(ABC):
     """Base class for complex objects.
@@ -152,7 +168,28 @@ class ComplexObject(ABC):
         """Create objects for the complex object."""
         pass
 
+    @property
+    def bbox(self) -> Tuple[int, int, int, int]:
+        """Return bounding box of complex object.
+
+        Returns:
+            Tuple[int, int, int, int]: x0, y0, x1, y1
+        """
+        x0 = min([obj.bbox[0] for obj in self.objects])
+        y0 = min([obj.bbox[1] for obj in self.objects])
+        x1 = max([obj.bbox[2] for obj in self.objects])
+        y1 = max([obj.bbox[3] for obj in self.objects])
+        return x0, y0, x1, y1
+
     def move(self, dx: int, dy: int) -> None:
         """Move complex object."""
         for obj in self.objects:
             obj.move(dx, dy)
+
+    def __repr__(self) -> str:
+        """Return string representation of complex object."""
+        return self.__str__()
+    
+    def __str__(self) -> str:
+        """Return string representation of complex object."""
+        return f"{self.__class__.__name__}(bbox={self.bbox})"

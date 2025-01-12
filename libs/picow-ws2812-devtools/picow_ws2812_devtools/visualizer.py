@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from typing import List, Union
 
 from picow_ws2812_core.base import Object, ComplexObject
 
@@ -19,7 +20,7 @@ class LedWallVisualizer:
         self.nrows = nrows
         self.ncols = ncols
         self.grid = np.zeros((nrows, ncols, 3), dtype=int)
-        self.objects = []
+        self.objects: List[Union[Object, ComplexObject]] = []
 
     def add_object(self, obj):
         """Add a Text object to the LED wall."""
@@ -34,17 +35,21 @@ class LedWallVisualizer:
         """Render the Text objects on the grid (led wall)."""
         for obj in self.objects:
             # these objects can be of two types: Object or ComplexObject
-            if isinstance(obj, ComplexObject):
+            if hasattr(obj, "objects"):
+                # ComplexObject
                 for subobj in obj.objects:
                     for pixel in subobj.pixels:
                         x, y, color_tuple = pixel.x, pixel.y, pixel.color
                         if 0 <= y < self.nrows and 0 <= x < self.ncols:
                             self.grid[y, x] = color_tuple
-            elif isinstance(obj, Object):
+            elif hasattr(obj, "pixels"):
+                # Object
                 for pixel in obj.pixels:
                     x, y, color_tuple = pixel.x, pixel.y, pixel.color
                     if 0 <= y < self.nrows and 0 <= x < self.ncols:
                         self.grid[y, x] = color_tuple
+            else:
+                raise ValueError(f"Invalid object type {type(obj)}")
 
     def show(self, autoclear=True):
         """Display the LED wall."""
