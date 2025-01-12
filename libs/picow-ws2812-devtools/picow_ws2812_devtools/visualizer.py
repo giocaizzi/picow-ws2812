@@ -1,10 +1,7 @@
 """visualizer module."""
 
 import matplotlib.pyplot as plt
-import numpy as np
 from picow_ws2812_core import Sequence, View
-from picow_ws2812_core.base import BaseObject, Collection
-from picow_ws2812_core.objects.char import Char
 
 
 class LedWallVisualizer:
