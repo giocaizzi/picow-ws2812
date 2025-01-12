@@ -2,7 +2,7 @@
 
 import pytest
 
-from picow_ledwall.base import Char, Pixel, CHAR_HEIGHT, CHAR_WIDTH
+from picow_ws2812_core.base import Char, Pixel, CHAR_HEIGHT, CHAR_WIDTH
 from tests.conftest import TEST_COLOR
 
 

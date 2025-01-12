@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "picow-ledwall"
-version = "0.1.0"
+name = "picow-ws2812"
+version = "0.1.0a1"
 description = ""
 authors = ["giocaizzi <giocaizzi@gmail.com>"]
 readme = "README.md"
@@ -22,7 +22,7 @@ testpaths = ["tests"]
 addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
 
 [tool.coverage.report]
-include = ["src/picow_ledwall/*"]
+include = ["src/picow_ws2812_core/*", "src/picow_ws2812/", "src/picow_ws2812_visualizer/*"]
 
 [tool.isort]
 profile = "black"

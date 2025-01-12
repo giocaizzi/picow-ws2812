@@ -1,6 +1,6 @@
 """test pixel module"""
 
-from picow_ledwall.base import Pixel
+from picow_ws2812_core.base import Pixel
 
 
 def test_pixel_initialization():
