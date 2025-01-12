@@ -26,7 +26,7 @@ b = convert_RGB_to_GRB((0, 0, 255))
 
 
 # LEDWALL
-l = LedWall(nrows, ncols, GPIO_PIN)
+ledwall = LedWall(nrows, ncols, GPIO_PIN)
 print("LedWall created.")
 
 while True:
@@ -43,10 +43,10 @@ while True:
         # l.display(TextString("BTC: +10%", position=(0, 0), color=b))
         # l.display(TextString("08/03/2024", position=(0, 1), color=r))
         # Scroll(l, TextString("CIAO", color=r))
-        Scroll(l, TextString("CIAO", color=r), speed=5, direction="right")
-        Scroll(l, TextString("LONG", color=g), speed=5)
-        Scroll(l, TextString("TEXT", color=b), speed=5, direction="up")
-        Scroll(l, TextString("STRING", color=r), speed=5, direction="down")
+        Scroll(ledwall, TextString("CIAO", color=r), speed=5, direction="right")
+        Scroll(ledwall, TextString("LONG", color=g), speed=5)
+        Scroll(ledwall, TextString("TEXT", color=b), speed=5, direction="up")
+        Scroll(ledwall, TextString("STRING", color=r), speed=5, direction="down")
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
         break
@@ -54,5 +54,5 @@ while True:
         print(e)
         break
 # exit
-l.quit()
+ledwall.quit()
 print("Finished.")

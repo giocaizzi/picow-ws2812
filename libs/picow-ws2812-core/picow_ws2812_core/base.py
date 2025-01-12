@@ -1,6 +1,7 @@
 """base classes."""
 
-from typing import Tuple, List
+from typing import List, Tuple
+
 from picow_ws2812_core.fonts import BASEFONT
 
 CHAR_WIDTH = 5

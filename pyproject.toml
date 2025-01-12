@@ -10,6 +10,7 @@ package-mode = false
 python = "^3.10"
 picow_ws2812_core = { path = "libs/picow-ws2812-core", develop = true }
 picow_ws2812_driver = { path = "libs/picow-ws2812-driver", develop = true }
+picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true, optional = true }
 
 [tool.poetry.extras]
 dev = ["picow_ws2812_devtools"]
@@ -25,14 +26,13 @@ picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true }
 
 # test configuration
 [tool.pytest.ini_options]
-testpaths = ["tests"]
 addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
 
 
 # format and code quality
 
 [tool.black]
-force-exclude = 'libs/picow-ws28128-core/fonts.py'
+force-exclude = "libs/picow-ws2812-core/picow_ws2812_core/fonts.py"
 
 [tool.isort]
 profile = "black"
@@ -48,6 +48,11 @@ extend-ignore = [
     "RST201",
     "RST203",
     "RST301",
+]
+exclude = [
+    "libs/picow-ws2812-core/picow_ws2812_core/fonts.py",
+    "libs/picow-ws2812-driver/picow_ws2812_driver/neopixel.py",
+    "libs/**/tests/*",
 ]
 
 [build-system]
