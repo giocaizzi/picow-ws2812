@@ -2,10 +2,8 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from typing import List, Union
-
-from picow_ws2812_core.base import BaseObject, Collection
 from picow_ws2812_core import Sequence, View
+from picow_ws2812_core.base import BaseObject, Collection
 from picow_ws2812_core.objects.char import Char
 
 
@@ -24,5 +22,11 @@ class LedWallVisualizer:
     def render_view(self, view: View):
         """Render a view."""
         fig, ax = plt.subplots()
-        ax.imshow(view.get_grid())    
+        ax.imshow(view.get_grid())
 
+    def render_sequence(self, sequence: Sequence):
+        """Render a sequence."""
+        fig, ax = plt.subplots()
+        for view in sequence.views:
+            ax.imshow(view.get_grid())
+            plt.pause(1)

@@ -2,9 +2,9 @@
 
 import time
 
+from picow_ws2812_core.base import Sequence, View
 from picow_ws2812_driver.indexer import Indexer
 from picow_ws2812_driver.neopixel import Neopixel
-from picow_ws2812_core.base import View, Sequence
 
 
 class LedWall(Neopixel):

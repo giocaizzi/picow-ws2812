@@ -1,9 +1,8 @@
 """base classes."""
 
-from typing import List, Tuple, Optional, Union
+from typing import List, Tuple, Union
 
 import numpy as np
-
 
 CHAR_WIDTH = 5
 CHAR_HEIGHT = 7
@@ -204,7 +203,9 @@ class View:
 
     objects: List[Union[BaseObject, Collection]] = []
 
-    def __init__(self, nrows:int, ncols:int, objects: List[Union[BaseObject, Collection]]):
+    def __init__(
+        self, nrows: int, ncols: int, objects: List[Union[BaseObject, Collection]]
+    ):
         """Create a View object.
 
         Args:
@@ -214,19 +215,20 @@ class View:
         self.nrows = nrows
         self.ncols = ncols
 
-
-    def get_grid(self)->np.ndarray:
+    def get_grid(self) -> np.ndarray:
         grid = np.zeros((self.nrows, self.ncols, 3), dtype=int)
         for obj in self.objects:
-            self._render_object_in_view(obj, grid)
+            self._render_object_in_grid(grid=grid, obj=obj)
 
         return grid
-    
-    def _render_object_in_view(self, obj, grid):
+
+    def _render_object_in_grid(
+        self, grid: np.ndarray, obj: Union[BaseObject, Collection]
+    ):
         """Render a single object or collection of objects."""
         if issubclass(type(obj), (Collection,)):
             for subobj in obj.objects:
-                self._render_object_in_view(subobj, grid)
+                self._render_object_in_grid(grid, subobj)
         elif issubclass(type(obj), (BaseObject,)):
             for pixel in obj.pixels:
                 x, y, color_tuple = pixel.x, pixel.y, pixel.color

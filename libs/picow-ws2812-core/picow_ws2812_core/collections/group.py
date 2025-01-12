@@ -1,7 +1,6 @@
-from picow_ws2812_core.base import BaseObject, Collection
-
-
 from typing import List, Optional, Union
+
+from picow_ws2812_core.base import BaseObject, Collection
 
 
 class Group(Collection):
@@ -19,4 +18,3 @@ class Group(Collection):
 
     def _create_objects(self) -> None:
         """Create objects for the group."""
-        pass

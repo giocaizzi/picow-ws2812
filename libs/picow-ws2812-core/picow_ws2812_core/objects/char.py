@@ -1,8 +1,7 @@
+from typing import Optional, Tuple
+
 from picow_ws2812_core.base import CHAR_HEIGHT, CHAR_WIDTH, BaseObject, Pixel
 from picow_ws2812_core.fonts import BASEFONT
-
-
-from typing import Tuple, Optional
 
 
 class Char(BaseObject):

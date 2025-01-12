@@ -1,9 +1,6 @@
-from picow_ws2812_core.base import CHAR_WIDTH
+from typing import List, Tuple
 
-
-from typing import List, Tuple, Optional
-
-from picow_ws2812_core.base import Collection, BaseObject
+from picow_ws2812_core.base import CHAR_WIDTH, BaseObject, Collection
 from picow_ws2812_core.objects.char import Char
 
 
