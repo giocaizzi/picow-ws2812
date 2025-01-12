@@ -2,6 +2,8 @@
 
 from typing import List, Tuple, Optional, Union
 
+import numpy as np
+
 
 CHAR_WIDTH = 5
 CHAR_HEIGHT = 7
@@ -200,13 +202,38 @@ class View:
     during the show() method, the view is displayed on the ledwall.
     """
 
-    def __init__(self, objecs: List[Union[BaseObject, Collection]]):
+    objects: List[Union[BaseObject, Collection]] = []
+
+    def __init__(self, nrows:int, ncols:int, objects: List[Union[BaseObject, Collection]]):
         """Create a View object.
 
         Args:
             objects (List[Union[Object, ComplexObject]]): objects
         """
-        self.objects = objecs
+        self.objects = objects
+        self.nrows = nrows
+        self.ncols = ncols
+
+
+    def get_grid(self)->np.ndarray:
+        grid = np.zeros((self.nrows, self.ncols, 3), dtype=int)
+        for obj in self.objects:
+            self._render_object_in_view(obj, grid)
+
+        return grid
+    
+    def _render_object_in_view(self, obj, grid):
+        """Render a single object or collection of objects."""
+        if issubclass(type(obj), (Collection,)):
+            for subobj in obj.objects:
+                self._render_object_in_view(subobj, grid)
+        elif issubclass(type(obj), (BaseObject,)):
+            for pixel in obj.pixels:
+                x, y, color_tuple = pixel.x, pixel.y, pixel.color
+                if 0 <= y < self.nrows and 0 <= x < self.ncols:
+                    grid[y, x] = color_tuple
+        else:
+            raise ValueError(f"Invalid object type {type(obj)}")
 
 
 class Sequence:
