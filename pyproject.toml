@@ -8,58 +8,20 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
-picow_ws2812_core = { path = "src/picow-ws2812-core" , develop = true }
-picow_ws2812_driver = { path = "src/picow-ws2812-driver" , develop = true }
-picow_ws2812_devtools = { path = "src/picow-ws2812-devtools", optional = true , develop = true }
+picow_ws2812_core = { path = "libs/picow-ws2812-core", develop = true }
+picow_ws2812_driver = { path = "libs/picow-ws2812-driver", develop = true }
 
 [tool.poetry.extras]
-driver = ["picow_ws2812_driver"]
 dev = ["picow_ws2812_devtools"]
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.group.test.dependencies]
 pytest = "^8.1.1"
 pytest-cov = "^4.1.0"
+
+[tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"
 ipykernel = "^6.29.5"
-
-[tool.black]
-force-exclude = 'src/picow_ledwall/text/fonts.py'
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
-
-[tool.coverage.report]
-include = ["src/picow_ws2812_core/*", "src/picow_ws2812/", "src/picow_ws2812_visualizer/*"]
-
-[tool.isort]
-profile = "black"
-
-[tool.flake8]
-extend-ignore = [
-    # black compatibility
-    # https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#minimal-configuration
-    "E203",
-    "E701",
-    # RST201, RST203, RST301 - Google Python Style docstrings cause errors (ref:??)
-    "RST201",
-    "RST203",
-    "RST301",
-]
-exclude = [
-    # neopixel library
-    "src/picow_ledwall/text/fonts.py",
-    "src/picow_ledwall/neopixel.py",
-    # usual
-    "tests/*",
-    ".github/*",
-    ".vscode/*",
-    "docs/*",
-    "docsrc/*",
-    "temp/*",
-    " ./build/*",
-]
-max-line-length = 88
+picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true }
 
 [build-system]
 requires = ["poetry-core"]
