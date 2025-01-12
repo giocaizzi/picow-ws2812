@@ -114,6 +114,7 @@ class Char:
 
         self.char = char.upper()
         self.color = color
+        self.pixels = []  # Initialize pixels list
 
         # dimensions of the char
         self.width = CHAR_WIDTH

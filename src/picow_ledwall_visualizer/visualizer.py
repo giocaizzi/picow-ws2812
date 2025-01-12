@@ -22,9 +22,9 @@ class LedWallVisualizer:
             for char in obj.chars:
                 print(char.char)
                 for pixel in char.pixels:
-                    print(pixel.x, pixel.y, pixel.color)
                     x, y, color_tuple = pixel.x, pixel.y, pixel.color
-                    self.grid[y - 1, x - 1] = color_tuple
+                    if 0 <= y < self.nrows and 0 <= x < self.ncols:
+                        self.grid[y, x] = color_tuple
 
     def show(self):
         """Display the LED wall."""
