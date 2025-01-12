@@ -2,7 +2,6 @@
 
 from typing import List, Tuple
 
-from picow_ws2812_core.fonts import BASEFONT
 
 CHAR_WIDTH = 5
 CHAR_HEIGHT = 7
@@ -82,120 +81,28 @@ class Pixel:
         self.y += dy
 
 
-class Char:
-    """Char object.
-
-    A Char object is a representation of a single character.
-    It contains the character, the color and a list of pixels.
+class Object:
+    """Base class for all objects displayed on the ledwall.
 
     Attributes:
-        char (str): character
-        color (Tuple[int, int, int]): color
         pixels (List[Pixel]): list of pixels
-        width (int): width of character
-        height (int): height of character
     """
 
     pixels: List[Pixel] = []
 
-    def __init__(self, char: str, color: Tuple[int, int, int]):
-        """Create a Char object.
+    def __init__(self):
+        """Create an Object object."""
+        self.pixels = []
 
-        Create a Char object with a character and a color.
-
-        Args:
-            char (str): character
-            color (Tuple[int, int, int]): color
-
-        Raises:
-            ValueError: if char is not a single character
-        """
-        if len(char) > 1:
-            raise ValueError("Char must be a single character")
-
-        self.char = char.upper()
-        self.color = color
-        self.pixels = []  # Initialize pixels list
-
-        # dimensions of the char
-        self.width = CHAR_WIDTH
-        self.height = CHAR_HEIGHT
-
-        # create pixes
-        self._create_pixels()
-
-    def _create_pixels(self) -> None:
-        """Encode char to Pixel.
-
-        Reads the font from the pixel font
-        and creates a list of pixels.
-
-        Raises:
-            ValueError: if char not in basefont
-            ValueError: if char has wrong height
-            ValueError: if char has wrong width
-        """
-
-        if self.char not in BASEFONT:
-            raise ValueError(f"Letter {self.char} not in basefont")
-        if len(BASEFONT[self.char]) != self.height:
-            raise ValueError(f"Letter {self.char} has wrong height")
-        if len(BASEFONT[self.char][0]) != self.width:
-            raise ValueError(f"Letter {self.char} has wrong width")
-
-        for dy, rowstring in enumerate(BASEFONT[self.char]):
-            for dx, letter in enumerate(rowstring):
-                if letter == "1":
-                    self.pixels.append(Pixel(dx, dy, self.color))
-
-
-class Text:
-    """Text object.
-
-    A Text object is a representation of a text.
-    It contains the text, the color and a list of chars.
-
-    Attributes:
-        text (str): text
-        color (Tuple[int, int, int]): color
-        chars (List[Char]): list of chars
-    """
-
-    def __init__(self, text: str, color: Tuple[int, int, int]):
-        """Create a Text object.
-
-        Create a Text object with a text and a color.
+    def add_pixel(self, pixel: Pixel) -> None:
+        """Add a pixel to the object.
 
         Args:
-            text (str): text
-            color (Tuple[int, int, int]): color
+            pixel (Pixel): pixel
         """
-        self.text = text
-        self.color = color
-        self.chars = self._create_chars()
+        self.pixels.append(pixel)
 
-    def _create_chars(self) -> List[Char]:
-        """Create a list of letters.
-
-        Returns:
-            List[Char]: list of Char objects
-        """
-        chars = []
-        for i, char in enumerate(self.text):
-            chars.append(Char(char, self.color))
-            for pixel in chars[i].pixels:
-                pixel.x += i * CHAR_WIDTH
-        return chars
-
-    def move(self, dx: int, dy: int):
-        """Move text.
-
-        Move the text by dx and dy.
-
-        Args:
-            dx (int): x movement
-            dy (int): y movement
-        """
-        for char in self.chars:
-            for pixel in char.pixels:
-                pixel.move(dx, dy)
+    def move(self, dx: int, dy: int) -> None:
+        """Move object."""
+        for pixel in self.pixels:
+            pixel.move(dx, dy)
