@@ -15,3 +15,7 @@ class Box(Object):
         for x in range(x0, x1 + 1):
             self.add_pixel(Pixel(x, y0, color))
             self.add_pixel(Pixel(x, y1, color))
+
+        for y in range(y0 + 1, y1):
+            self.add_pixel(Pixel(x0, y, color))
+            self.add_pixel(Pixel(x1, y, color))
