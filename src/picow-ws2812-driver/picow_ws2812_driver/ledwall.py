@@ -2,9 +2,9 @@
 
 import time
 
-from picow_ws2812.indexer import Indexer
-from picow_ws2812.neopixel import Neopixel
-from picow_ws2812.text import TextString
+from picow_ws2812_driver.indexer import Indexer
+from picow_ws2812_driver.neopixel import Neopixel
+from picow_ws2812_driver.text import TextString
 
 
 class LedWall(Neopixel):

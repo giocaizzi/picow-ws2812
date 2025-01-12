@@ -1,6 +1,6 @@
-from picow_ws2812.effects import Scroll
-from picow_ws2812.ledwall import LedWall
-from picow_ws2812.text import TextString
+from picow_ws2812_driver.effects import Scroll
+from picow_ws2812_driver.ledwall import LedWall
+from picow_ws2812_driver.text import TextString
 
 # Define the GPIO pin
 GPIO_PIN = 28

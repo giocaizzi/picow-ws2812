@@ -1,12 +1,20 @@
 [tool.poetry]
 name = "picow-ws2812"
-version = "0.1.0a1"
+version = "0.1.0"
 description = ""
 authors = ["giocaizzi <giocaizzi@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
+picow_ws2812_core = { path = "src/picow-ws2812-core" , develop = true }
+picow_ws2812_driver = { path = "src/picow-ws2812-driver" , develop = true }
+picow_ws2812_devtools = { path = "src/picow-ws2812-devtools", optional = true , develop = true }
+
+[tool.poetry.extras]
+driver = ["picow_ws2812_driver"]
+dev = ["picow_ws2812_devtools"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
