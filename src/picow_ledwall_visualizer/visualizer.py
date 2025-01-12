@@ -20,17 +20,18 @@ class LedWallVisualizer:
         for obj in objects:
             # text
             for char in obj.chars:
-                print(char.char)
                 for pixel in char.pixels:
                     x, y, color_tuple = pixel.x, pixel.y, pixel.color
                     if 0 <= y < self.nrows and 0 <= x < self.ncols:
                         self.grid[y, x] = color_tuple
 
-    def show(self):
+    def show(self, autoclear=True):
         """Display the LED wall."""
         # create Array-like object from x, y, color
         plt.imshow(self.grid)
         plt.show()
+        if autoclear:
+            self.clear()
 
     def clear(self):
         """Clear the LED wall."""

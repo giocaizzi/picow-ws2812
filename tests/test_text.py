@@ -27,7 +27,8 @@ def test_text_char(text):
     # inherit from Text init
     for char, strchar in zip(text_obj.chars, text):
         assert isinstance(char, Char)
-        assert char.char == strchar
+        # chars are written only uppercase
+        assert char.char == strchar.upper()
         assert char.color == TEST_COLOR
 
 
@@ -57,10 +58,8 @@ def test_text_movement():
     dx, dy = 1, 1
     text.move(dx, dy)
 
-    for (initial_x, initial_y), char in zip(initial_positions, text.chars):
-        print(char.char)
-        print("initial_x", initial_x)
-        print("initial_y", initial_y)
-        for pixel in char.pixels:
-            assert pixel.x == initial_x + dx
-            assert pixel.y == initial_y + dy
+    for (initial_x, initial_y), pixel in zip(
+        initial_positions, [pixel for char in text.chars for pixel in char.pixels]
+    ):
+        assert pixel.x == initial_x + dx
+        assert pixel.y == initial_y + dy
