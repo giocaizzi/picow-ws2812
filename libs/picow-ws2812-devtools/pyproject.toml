@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "picow-ws2812-devtools"
-version = "0.1.0a5"
+version = "0.1.06"
 description = ""
 authors = ["Giorgio Caizzi <giocaizzi@gmail.com>"]
 readme = "README.md"

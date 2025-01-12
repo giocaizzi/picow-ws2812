@@ -25,6 +25,7 @@ ipykernel = "^6.29.5"
 picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true }
 
 # test configuration
+ipympl = "^0.9.6"
 [tool.pytest.ini_options]
 addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
 

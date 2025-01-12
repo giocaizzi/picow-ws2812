@@ -1,7 +1,10 @@
 """visualizer module."""
 
 import matplotlib.pyplot as plt
-from picow_ws2812_core import Sequence, View
+from matplotlib.animation import FuncAnimation
+from picow_ws2812_core import StaticSequence, StaticView
+
+#
 
 
 class LedWallVisualizer:
@@ -16,14 +19,27 @@ class LedWallVisualizer:
         self.nrows = nrows
         self.ncols = ncols
 
-    def render_view(self, view: View):
+    def render_view(self, view: StaticView):
         """Render a view."""
         fig, ax = plt.subplots()
-        ax.imshow(view.get_grid())
+        self._render_grid(ax, view.get_grid())
 
-    def render_sequence(self, sequence: Sequence):
+    def _render_grid(self, ax, grid):
+        """Render a grid."""
+        ax.imshow(grid)
+
+    def render_sequence(self, sequence: StaticSequence):
         """Render a sequence."""
         fig, ax = plt.subplots()
-        for view in sequence.views:
-            self.render_view(view)
-            plt.pause(1)
+        frames = sequence.get_frames()
+        im = ax.imshow(frames[0])
+
+        def update(frame):
+            im.set_data(frame)
+            return im,  # Return a list containing the im object
+
+        ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=10)
+
+        plt.show()
+
+        return ani

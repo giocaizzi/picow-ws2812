@@ -194,7 +194,7 @@ class Collection:
         return f"{self.__class__.__name__}(bbox={self.bbox})"
 
 
-class View:
+class StaticView:
     """Base class for a view.
 
     A view is what is displayed on the ledwall.
@@ -238,16 +238,20 @@ class View:
             raise ValueError(f"Invalid object type {type(obj)}")
 
 
-class Sequence:
+class StaticSequence:
     """Base class for a sequence.
 
     A sequence is a collection of views.
     """
 
-    def __init__(self, views: List[View]):
+    def __init__(self, views: List[StaticView]):
         """Create a Sequence object.
 
         Args:
             views (List[View]): views
         """
         self.views = views
+
+    def get_frames(self) -> List[np.ndarray]:
+        frames = [view.get_grid() for view in self.views]
+        return frames

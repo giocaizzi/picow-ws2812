@@ -2,7 +2,7 @@
 
 import time
 
-from picow_ws2812_core.base import Sequence, View
+from picow_ws2812_core.base import StaticSequence, StaticView
 from picow_ws2812_driver.indexer import Indexer
 from picow_ws2812_driver.neopixel import Neopixel
 
@@ -30,7 +30,7 @@ class LedWall(Neopixel):
         # set the default brightness
         self.brightness(self._default_brightness)
 
-    def display(self, sequence: Sequence):
+    def display(self, sequence: StaticSequence):
         """display sequence on the led wall
 
         Args:
@@ -39,7 +39,7 @@ class LedWall(Neopixel):
         for view in sequence.views:
             self._show_view(view=view)
 
-    def _show_view(self, view: View):
+    def _show_view(self, view: StaticView):
         """display object on the led wall
 
         Args:

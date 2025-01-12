@@ -1,3 +1,3 @@
-from .base import Sequence, View
+from .base import StaticSequence, StaticView
 
-__all__ = ["Sequence", "View"]
+__all__ = ["StaticSequence", "StaticView"]
