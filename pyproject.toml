@@ -9,7 +9,6 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "^3.10"
 picow_ws2812_core = { path = "libs/picow-ws2812-core", develop = true }
-picow_ws2812_driver = { path = "libs/picow-ws2812-driver", develop = true }
 picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true, optional = true }
 
 [tool.poetry.extras]
