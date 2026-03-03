@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "picow-ws2812-core"
+name = "picow-ws2812-monorepo"
 version = "0.1.0a1"
-description = ""
+description = "Micropython library for controlling WS2812 LED strips with the Raspberry Pi Pico W"
 authors = ["Giorgio Caizzi <giocaizzi@gmail.com>"]
 readme = "README.md"
 
