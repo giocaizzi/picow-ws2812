@@ -1,10 +1,105 @@
-"""Bitmap icon set for LED wall plugins.
+"""Bitmap icon sets for LED wall plugins.
 
 Each icon is a list of strings where '1' = pixel on, '.' = pixel off.
-All icons are 7x7, designed for low-resolution LED displays.
+ICONS_L: 7x7 icons, ICONS_S: 5x5 icons.
 """
 
-ICONS: dict[str, list[str]] = {
+from enum import StrEnum
+
+
+class IconSize(StrEnum):
+    S = "S"
+    L = "L"
+
+
+ICONS_S: dict[str, list[str]] = {
+    "sun": [
+        "1.1.1",
+        ".111.",
+        "11111",
+        ".111.",
+        "1.1.1",
+    ],
+    "cloud": [
+        ".111.",
+        "11111",
+        "11111",
+        ".111.",
+        ".....",
+    ],
+    "cloud_sun": [
+        "1.1..",
+        ".1...",
+        ".111.",
+        "11111",
+        "11111",
+    ],
+    "rain": [
+        ".111.",
+        "11111",
+        ".....",
+        "1.1.1",
+        ".1.1.",
+    ],
+    "snow": [
+        ".111.",
+        "11111",
+        ".....",
+        ".1.1.",
+        "1.1.1",
+    ],
+    "storm": [
+        ".111.",
+        "11111",
+        "..11.",
+        ".11..",
+        "..1..",
+    ],
+    "drop": [
+        "..1..",
+        "..1..",
+        ".111.",
+        ".111.",
+        "..1..",
+    ],
+    "wind": [
+        ".....",
+        "1111.",
+        ".....",
+        ".1111",
+        ".....",
+    ],
+    "thermometer": [
+        ".1...",
+        "111..",
+        ".1...",
+        ".1...",
+        "111..",
+    ],
+    "bitcoin": [
+        ".11..",
+        "1..1.",
+        "111..",
+        "1..1.",
+        ".11..",
+    ],
+    "arrow_up": [
+        "..1..",
+        ".111.",
+        "1.1.1",
+        "..1..",
+        "..1..",
+    ],
+    "arrow_down": [
+        "..1..",
+        "..1..",
+        "1.1.1",
+        ".111.",
+        "..1..",
+    ],
+}
+
+ICONS_L: dict[str, list[str]] = {
     "sun": [
         "...1...",
         "...1...",
@@ -114,3 +209,13 @@ ICONS: dict[str, list[str]] = {
         "...1...",
     ],
 }
+
+_ICON_SETS: dict[IconSize, dict[str, list[str]]] = {
+    IconSize.S: ICONS_S,
+    IconSize.L: ICONS_L,
+}
+
+
+def get_icon(name: str, size: IconSize = IconSize.L) -> list[str] | None:
+    """Look up a bitmap icon by name and size."""
+    return _ICON_SETS[size].get(name)

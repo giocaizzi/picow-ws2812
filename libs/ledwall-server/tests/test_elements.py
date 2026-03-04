@@ -8,6 +8,7 @@ from ledwall_server.plugins.elements import (
     RectElement,
     TextElement,
 )
+from ledwall_server.plugins.icons import IconSize
 
 
 def test_text_element_draws_nonzero_pixels():
@@ -43,6 +44,19 @@ def test_icon_element_draws_bitmap():
     elem = IconElement(0, 0, 8, 8, icon="sun", color=(255, 200, 0))
     elem.draw(canvas)
     assert np.any(canvas > 0), "IconElement should draw visible pixels"
+
+
+def test_icon_element_draws_small_bitmap():
+    """IconElement with icon_size=S should draw 5x5 icon."""
+    canvas = np.zeros((5, 5, 3), dtype=np.uint8)
+    elem = IconElement(
+        0, 0, 5, 5, icon="sun", color=(255, 200, 0), icon_size=IconSize.S
+    )
+    elem.draw(canvas)
+    assert np.any(canvas > 0), "Small icon should draw visible pixels"
+    # 5x5 sun has 17 lit pixels (3+3+5+3+3)
+    lit = np.any(canvas > 0, axis=2).sum()
+    assert lit == 17
 
 
 def test_icon_element_unknown_icon():

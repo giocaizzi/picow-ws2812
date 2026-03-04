@@ -4,14 +4,12 @@ Elements are small, reusable renderers that draw onto a numpy subregion.
 They don't tick or manage state — they just draw.
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from ledwall_server.plugins.icons import ICONS
+from ledwall_server.plugins.icons import IconSize, get_icon
 
 _FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
 
@@ -94,13 +92,15 @@ class IconElement(Element):
         h: int,
         icon: str = "",
         color: tuple[int, int, int] = (255, 255, 255),
+        icon_size: IconSize = IconSize.L,
     ):
         super().__init__(x, y, w, h)
         self.icon = icon
         self.color = color
+        self.icon_size = icon_size
 
     def draw(self, canvas: np.ndarray) -> None:
-        bitmap = ICONS.get(self.icon)
+        bitmap = get_icon(self.icon, self.icon_size)
         if bitmap is None:
             return
         ch, cw = canvas.shape[:2]
