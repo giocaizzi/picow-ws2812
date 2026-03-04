@@ -1298,12 +1298,14 @@ name = "picow-ws2812-devtools"
 version = "0.1.0"
 source = { editable = "libs/picow-ws2812-devtools" }
 dependencies = [
+    { name = "ledwall-server" },
     { name = "matplotlib" },
     { name = "picow-ws2812" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "ledwall-server", editable = "libs/ledwall-server" },
     { name = "matplotlib", specifier = ">=3.10" },
     { name = "picow-ws2812", editable = "libs/picow-ws2812" },
 ]

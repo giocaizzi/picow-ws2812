@@ -10,7 +10,9 @@ from ledwall_server.api.routes import configure, router
 from ledwall_server.config import settings
 from ledwall_server.plugins.clock import Clock
 from ledwall_server.plugins.effect import ColorCycle, Rainbow, SolidColor
+from ledwall_server.plugins.image import AnimatedGif, StaticImage
 from ledwall_server.plugins.text import ScrollingText, StaticText
+from ledwall_server.plugins.weather import Weather
 from ledwall_server.renderer import Renderer
 from ledwall_server.scene import SceneManager
 from ledwall_server.sender import FrameSender
@@ -23,6 +25,9 @@ PLUGIN_REGISTRY: dict[str, type] = {
     "clock": Clock,
     "static_text": StaticText,
     "scrolling_text": ScrollingText,
+    "weather": Weather,
+    "static_image": StaticImage,
+    "animated_gif": AnimatedGif,
 }
 
 # Scene registry — predefined scene configurations
@@ -46,6 +51,40 @@ SCENE_REGISTRY: dict[str, list[dict]] = {
     ],
     "red": [
         {"plugin": "solid_color", "config": {"color": [255, 0, 0]}, "x": 0, "y": 0},
+    ],
+    "weather": [
+        {
+            "plugin": "weather",
+            "config": {"lat": 45.46, "lon": 9.19},
+            "x": 0,
+            "y": 0,
+        },
+    ],
+    "dashboard": [
+        {
+            "plugin": "weather",
+            "config": {"lat": 45.46, "lon": 9.19},
+            "x": 0,
+            "y": 0,
+            "w": 16,
+            "h": 16,
+        },
+        {
+            "plugin": "clock",
+            "config": {"color": [0, 255, 0]},
+            "x": 16,
+            "y": 0,
+            "w": 16,
+            "h": 16,
+        },
+        {
+            "plugin": "scrolling_text",
+            "config": {"text": "LED WALL DASHBOARD", "color": [255, 200, 0]},
+            "x": 0,
+            "y": 16,
+            "w": 32,
+            "h": 8,
+        },
     ],
 }
 

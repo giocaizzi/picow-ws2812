@@ -1,44 +1,92 @@
-"""visualizer module."""
+"""LED wall visualizer — preview plugins and scenes in matplotlib."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.animation import FuncAnimation
 
-from picow_ws2812.core import StaticSequence, StaticView
-
-#
+if TYPE_CHECKING:
+    from ledwall_server.plugins.base import BasePlugin
+    from ledwall_server.renderer import Renderer
 
 
 class LedWallVisualizer:
-    def __init__(self, nrows: int, ncols: int):
-        """Initialize the LED wall simulator.
+    """Preview LED wall plugins and composed scenes."""
 
-        Args:
-            nrows (int): Number of rows.
-            ncols (int): Number of columns.
-            grid (np.ndarray): Grid of pixels.
-        """
-        self.nrows = nrows
-        self.ncols = ncols
+    def __init__(self, width: int = 32, height: int = 24):
+        self.width = width
+        self.height = height
 
-    def render_view(self, view: StaticView):
-        """Render a view."""
+    def preview_plugin(
+        self,
+        plugin: BasePlugin,
+        frames: int = 100,
+        interval: int = 33,
+    ) -> None:
+        """Animate a single plugin."""
         fig, ax = plt.subplots()
-        self._render_grid(ax, view.get_grid())
+        ax.set_title(type(plugin).__name__)
+        im = ax.imshow(
+            np.zeros((plugin.height, plugin.width, 3), dtype=np.uint8),
+            interpolation="nearest",
+        )
+        ax.axis("off")
 
-    def _render_grid(self, ax, grid):
-        """Render a grid."""
-        ax.imshow(grid)
-
-    def render_sequence(self, sequence: StaticSequence, interval: int = 500):
-        """Render a sequence."""
-        fig, ax = plt.subplots()
-        frames = sequence.get_frames()
-        im = ax.imshow(frames[0])
-
-        def update(frame):
-            im.set_data(frame)
-            return (im,)  # Return a list containing the im object
+        def update(_frame_num: int):
+            plugin.tick()
+            im.set_data(plugin.render())
+            return (im,)
 
         _ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
+        plt.show()
 
+    def preview_scene(
+        self,
+        renderer: Renderer,
+        layers: list[tuple[BasePlugin, int, int]],
+        frames: int = 100,
+        interval: int = 33,
+    ) -> None:
+        """Animate a composed scene using Renderer."""
+        fig, ax = plt.subplots()
+        ax.set_title("Scene Preview")
+        im = ax.imshow(
+            np.zeros((self.height, self.width, 3), dtype=np.uint8),
+            interpolation="nearest",
+        )
+        ax.axis("off")
+
+        def update(_frame_num: int):
+            for plugin, _, _ in layers:
+                plugin.tick()
+            frame = renderer.compose(layers)
+            im.set_data(frame)
+            return (im,)
+
+        _ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
+        plt.show()
+
+    def snapshot(
+        self,
+        plugin: BasePlugin | None = None,
+        renderer: Renderer | None = None,
+        layers: list[tuple[BasePlugin, int, int]] | None = None,
+    ) -> None:
+        """Show a single frame (no animation)."""
+        if renderer is not None and layers is not None:
+            for p, _, _ in layers:
+                p.tick()
+            frame = renderer.compose(layers)
+        elif plugin is not None:
+            plugin.tick()
+            frame = plugin.render()
+        else:
+            frame = np.zeros((self.height, self.width, 3), dtype=np.uint8)
+
+        fig, ax = plt.subplots()
+        ax.imshow(frame, interpolation="nearest")
+        ax.axis("off")
         plt.show()

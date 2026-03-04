@@ -72,9 +72,9 @@ def set_active_scene(req: SetSceneRequest) -> dict[str, str]:
         config = layer.get("config", {})
         x = layer.get("x", 0)
         y = layer.get("y", 0)
-        plugin = cls(
-            config, _scene_manager.renderer.width, _scene_manager.renderer.height
-        )
+        w = layer.get("w", _scene_manager.renderer.width)
+        h = layer.get("h", _scene_manager.renderer.height)
+        plugin = cls(config, w, h)
         layers.append((plugin, x, y))
     _scene_manager.set_scene(layers)
     return {"status": "ok", "scene": req.scene}
