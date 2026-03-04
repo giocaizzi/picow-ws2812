@@ -27,3 +27,9 @@ The `picow-s2812` package is **Micropython-only**. Do not include any Python cod
 - main.py : Pico W asyncio entry point
 - pyproject.toml : Root uv workspace configuration
 ```   
+
+---
+
+# Notebooks
+
+The [notebooks](./notebooks) contain notebooks used to preview the WS2812 effects and animations. Keep it up to date.
