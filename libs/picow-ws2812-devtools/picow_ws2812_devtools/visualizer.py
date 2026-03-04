@@ -1,4 +1,7 @@
-"""LED wall visualizer — preview plugins and scenes in matplotlib."""
+"""LED wall visualizer — preview plugins and scenes in matplotlib.
+
+Works in Jupyter notebooks with `%matplotlib ipympl`.
+"""
 
 from __future__ import annotations
 
@@ -14,11 +17,23 @@ if TYPE_CHECKING:
 
 
 class LedWallVisualizer:
-    """Preview LED wall plugins and composed scenes."""
+    """Preview LED wall plugins and composed scenes.
+
+    Usage in notebook::
+
+        %matplotlib ipympl
+
+        from ledwall_server.plugins.effect import Rainbow
+        from picow_ws2812_devtools.visualizer import LedWallVisualizer
+
+        viz = LedWallVisualizer()
+        viz.preview_plugin(Rainbow({"speed": 3}, 32, 24))
+    """
 
     def __init__(self, width: int = 32, height: int = 24):
         self.width = width
         self.height = height
+        self._ani: FuncAnimation | None = None
 
     def preview_plugin(
         self,
@@ -40,7 +55,7 @@ class LedWallVisualizer:
             im.set_data(plugin.render())
             return (im,)
 
-        _ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
+        self._ani = FuncAnimation(fig, update, frames=frames, interval=interval)
         plt.show()
 
     def preview_scene(
@@ -66,7 +81,7 @@ class LedWallVisualizer:
             im.set_data(frame)
             return (im,)
 
-        _ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
+        self._ani = FuncAnimation(fig, update, frames=frames, interval=interval)
         plt.show()
 
     def snapshot(
