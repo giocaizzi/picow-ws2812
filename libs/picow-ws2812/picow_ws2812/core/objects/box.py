@@ -1,16 +1,13 @@
-from typing import Tuple
-
 from ..base import BaseObject, Pixel
 
 
 class Box(BaseObject):
-
-    def __init__(self, x0: int, y0: int, x1: int, y1: int, color: Tuple[int, int, int]):
+    def __init__(self, x0: int, y0: int, x1: int, y1: int, color: tuple[int, int, int]):
         super().__init__()
         self._create_pixels(x0, y0, x1, y1, color)
 
     def _create_pixels(
-        self, x0: int, y0: int, x1: int, y1: int, color: Tuple[int, int, int]
+        self, x0: int, y0: int, x1: int, y1: int, color: tuple[int, int, int]
     ):
         # create a line connecting the corners
         for x in range(x0, x1 + 1):

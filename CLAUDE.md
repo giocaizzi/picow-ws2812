@@ -17,11 +17,13 @@ The `picow-s2812` package is **Micropython-only**. Do not include any Python cod
 ## Project structure:
 
 ```
--/libs      
-    /picow-ws2812-devtools :
-        Development tools for WS2812 driver
+-/libs
     /picow-ws2812 :
-        Core micropython
-- main.py : Application entry point
-- pyproject.toml : Root project configuration
+        Core MicroPython library (neopixel, indexer, ledwall, protocol, receiver, wifi, fallback)
+    /picow-ws2812-devtools :
+        Development tools for WS2812 driver (matplotlib visualizer)
+    /ledwall-server :
+        Pi5 FastAPI server (renderer, sender, plugins, scene manager, REST API)
+- main.py : Pico W asyncio entry point
+- pyproject.toml : Root uv workspace configuration
 ```   

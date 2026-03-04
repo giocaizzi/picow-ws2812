@@ -1,9 +1,11 @@
 """test char module"""
 
 import pytest
-from picow_ws2812_core.base import CHAR_HEIGHT, CHAR_WIDTH, Pixel
-from picow_ws2812_core.objects.char import Char
-from tests.conftest import TEST_COLOR
+
+from picow_ws2812.core.base import Pixel
+from picow_ws2812.core.objects.char import Char
+
+TEST_COLOR = (0, 255, 0)
 
 
 def test_char_initialization():

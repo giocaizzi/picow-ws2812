@@ -1,63 +1,38 @@
-"""ledwall module"""
+"""LedWall module — thin wrapper over Neopixel + Indexer."""
 
-import time
-
-from picow_ws2812.core.base import StaticSequence, StaticView
 from picow_ws2812.indexer import Indexer
 from picow_ws2812.neopixel import Neopixel
 
 
 class LedWall(Neopixel):
-    _default_brightness = 1
-    wait = 1.0
+    """LED wall controller combining Neopixel driver with multi-strip Indexer."""
 
-    def __init__(self, nrows: int, ncols: int, GPIO_PIN: int):
-        """initialize the led wall
-
-        Args:
-            nrows (int): number of rows
-            ncols (int): number of columns
-            GPIO_PIN (int): GPIO pin number
-        """
-        try:
-            # create the neopixel object
-            super().__init__(nrows * ncols, 0, GPIO_PIN, mode="RGB")
-            # create the indexer
-            self.indexer = Indexer(nrows, ncols, row_height=7)
-        except Exception as e:
-            raise e
-
-        # set the default brightness
-        self.brightness(self._default_brightness)
-
-    def display(self, sequence: StaticSequence):
-        """display sequence on the led wall
+    def __init__(self, strips_config, gpio_pin, state_machine=0, mode="GRB"):
+        """Initialize the LED wall.
 
         Args:
-            sequence (Sequence): sequence to display
+            strips_config: list of strip dicts for Indexer
+                (each with nrows, ncols, y_offset, zigzag)
+            gpio_pin: GPIO pin number for WS2812 data line
+            state_machine: PIO state machine id (default 0)
+            mode: color mode string (default "GRB")
         """
-        for view in sequence.views:
-            self._show_view(view=view)
+        self.indexer = Indexer(strips_config)
+        total_leds = self.indexer.num_leds
+        super().__init__(total_leds, state_machine, gpio_pin, mode=mode)
 
-    def _show_view(self, view: StaticView):
-        """display object on the led wall
+        self.nrows = sum(s["nrows"] for s in strips_config)
+        self.ncols = strips_config[0]["ncols"]
+        self.brightness(1)
+
+    def set_pixel_xy(self, x, y, color):
+        """Set pixel by 2D coordinate.
 
         Args:
-            obj (object): object to display, object must have a
-                `pixels` attribute
-            wait (int, optional): time to wait before clearing the display.
-                Defaults to 1.
+            x: column index
+            y: row index
+            color: (r, g, b) tuple
         """
-        for obj in view.objects:
-            for pixel, color in obj.pixels:
-                for x, y in pixel:
-                    try:
-                        self.set_pixel(self.indexer.get_pixel_number(x, y), color)
-                    # ignore out of range pixels
-                    except IndexError:
-                        pass
-                    except Exception as e:
-                        raise e
-        self.show()
-        time.sleep(self.wait)
-        self.clear()
+        idx = self.indexer.get_pixel_number(x, y)
+        if idx >= 0:
+            self.set_pixel(idx, color)

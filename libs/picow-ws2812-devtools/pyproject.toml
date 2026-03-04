@@ -1,13 +1,15 @@
-[tool.poetry]
+[project]
 name = "picow-ws2812-devtools"
-version = "0.1.06"
-description = ""
-authors = ["Giorgio Caizzi <giocaizzi@gmail.com>"]
+version = "0.1.0"
+description = "Development tools for WS2812 LED wall visualization"
+authors = [{ name = "Giorgio Caizzi", email = "giocaizzi@gmail.com" }]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.9"
+requires-python = ">=3.10"
+dependencies = [
+    "picow-ws2812",
+    "matplotlib>=3.10",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

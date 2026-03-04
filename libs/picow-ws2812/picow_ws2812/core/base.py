@@ -1,7 +1,5 @@
 """base classes."""
 
-from typing import List, Tuple, Union
-
 import numpy as np
 
 CHAR_WIDTH = 5
@@ -20,7 +18,7 @@ class Pixel:
         color (Tuple[int, int, int]): color
     """
 
-    def __init__(self, x: int, y: int, color: Tuple[int, int, int]):
+    def __init__(self, x: int, y: int, color: tuple[int, int, int]):
         """Create a Pixel object.
 
         Create a Pixel object with an x and y position and a color.
@@ -63,12 +61,12 @@ class Pixel:
         self._y = y
 
     @property
-    def color(self) -> Tuple[int, int, int]:
+    def color(self) -> tuple[int, int, int]:
         """Return color of pixel."""
         return self._color
 
     @color.setter
-    def color(self, color: Tuple[int, int, int]):
+    def color(self, color: tuple[int, int, int]):
         """Set color of pixel.
 
         Args:
@@ -97,7 +95,7 @@ class BaseObject:
         pixels (List[Pixel]): list of pixels
     """
 
-    pixels: List[Pixel] = []
+    pixels: list[Pixel] = []
 
     def __init__(self):
         """Create an Object object."""
@@ -117,7 +115,7 @@ class BaseObject:
             pixel.move(dx, dy)
 
     @property
-    def bbox(self) -> Tuple[int, int, int, int]:
+    def bbox(self) -> tuple[int, int, int, int]:
         """Return bounding box of object.
 
         Returns:
@@ -144,7 +142,7 @@ class Collection:
     A collection functions as a single object.
     """
 
-    objects: List[BaseObject] = []
+    objects: list[BaseObject] = []
 
     def __init__(self):
         """Create a ComplexObject object."""
@@ -158,7 +156,7 @@ class Collection:
         """
         self.objects.append(obj)
 
-    def add_objects(self, objects: List[BaseObject]) -> None:
+    def add_objects(self, objects: list[BaseObject]) -> None:
         """Add objects to the complex object.
 
         Args:
@@ -168,7 +166,7 @@ class Collection:
             self.add_object(obj)
 
     @property
-    def bbox(self) -> Tuple[int, int, int, int]:
+    def bbox(self) -> tuple[int, int, int, int]:
         """Return bounding box of complex object.
 
         Returns:
@@ -201,11 +199,9 @@ class StaticView:
     during the show() method, the view is displayed on the ledwall.
     """
 
-    objects: List[Union[BaseObject, Collection]] = []
+    objects: list[BaseObject | Collection] = []
 
-    def __init__(
-        self, nrows: int, ncols: int, objects: List[Union[BaseObject, Collection]]
-    ):
+    def __init__(self, nrows: int, ncols: int, objects: list[BaseObject | Collection]):
         """Create a View object.
 
         Args:
@@ -222,9 +218,7 @@ class StaticView:
 
         return grid
 
-    def _render_object_in_grid(
-        self, grid: np.ndarray, obj: Union[BaseObject, Collection]
-    ):
+    def _render_object_in_grid(self, grid: np.ndarray, obj: BaseObject | Collection):
         """Render a single object or collection of objects."""
         if issubclass(type(obj), (Collection,)):
             for subobj in obj.objects:
@@ -244,7 +238,7 @@ class StaticSequence:
     A sequence is a collection of views.
     """
 
-    def __init__(self, views: List[StaticView]):
+    def __init__(self, views: list[StaticView]):
         """Create a Sequence object.
 
         Args:
@@ -252,6 +246,6 @@ class StaticSequence:
         """
         self.views = views
 
-    def get_frames(self) -> List[np.ndarray]:
+    def get_frames(self) -> list[np.ndarray]:
         frames = [view.get_grid() for view in self.views]
         return frames

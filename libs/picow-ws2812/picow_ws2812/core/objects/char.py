@@ -1,7 +1,5 @@
-from typing import Optional, Tuple
-
-from picow_ws2812_core.base import CHAR_HEIGHT, CHAR_WIDTH, BaseObject, Pixel
-from picow_ws2812_core.fonts import BASEFONT
+from ..base import CHAR_HEIGHT, CHAR_WIDTH, BaseObject, Pixel
+from ..fonts import BASEFONT
 
 
 class Char(BaseObject):
@@ -20,10 +18,10 @@ class Char(BaseObject):
     def __init__(
         self,
         char: str,
-        color: Tuple[int, int, int],
+        color: tuple[int, int, int],
         x0: int = 0,
         y0: int = 0,
-        char_width_offset: Optional[int] = None,
+        char_width_offset: int | None = None,
     ):
         """Create a Char object.
 

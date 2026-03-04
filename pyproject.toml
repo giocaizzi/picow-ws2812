@@ -1,60 +1,47 @@
-[tool.poetry]
-name = "picow-ws2812"
+[project]
+name = "picow-ws2812-workspace"
 version = "0.1.0"
-description = ""
-authors = ["giocaizzi <giocaizzi@gmail.com>"]
+description = "Pi5 Server + Pico W LED Wall Streaming"
+authors = [{ name = "Giorgio Caizzi", email = "giocaizzi@gmail.com" }]
 readme = "README.md"
-package-mode = false
+requires-python = ">=3.10"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-picow_ws2812_core = { path = "libs/picow-ws2812-core", develop = true }
-picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true, optional = true }
-
-[tool.poetry.extras]
-dev = ["picow_ws2812_devtools"]
-
-[tool.poetry.group.test.dependencies]
-pytest = "^8.1.1"
-pytest-cov = "^4.1.0"
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^3.7.1"
-ipykernel = "^6.29.5"
-picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true }
-
-# test configuration
-ipympl = "^0.9.6"
-[tool.pytest.ini_options]
-addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
-
-
-# format and code quality
-
-[tool.black]
-force-exclude = "libs/picow-ws2812-core/picow_ws2812_core/fonts.py"
-
-[tool.isort]
-profile = "black"
-
-[tool.flake8]
-max-line-length = 88
-extend-ignore = [
-    # black compatibility
-    # https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#minimal-configuration
-    "E203",
-    "E701",
-    # RST201, RST203, RST301 - Google Python Style docstrings cause errors (ref:??)
-    "RST201",
-    "RST203",
-    "RST301",
+[dependency-groups]
+dev = [
+    "pytest>=8.1",
+    "pytest-cov>=4.1",
+    "pre-commit>=3.7",
+    "ipykernel>=6.29",
+    "ipympl>=0.9",
+    "ruff>=0.9",
+    "picow-ws2812",
+    "picow-ws2812-devtools",
+    "ledwall-server",
 ]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["libs/*"]
+
+[tool.uv.sources]
+picow-ws2812 = { workspace = true }
+picow-ws2812-devtools = { workspace = true }
+ledwall-server = { workspace = true }
+
+[tool.ruff]
+line-length = 88
 exclude = [
-    "libs/picow-ws2812-core/picow_ws2812_core/fonts.py",
-    "libs/picow-ws2812-driver/picow_ws2812_driver/neopixel.py",
-    "libs/**/tests/*",
+    "libs/picow-ws2812/picow_ws2812/neopixel.py",
+    "libs/picow-ws2812/picow_ws2812/fonts.py",
 ]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["picow_ws2812", "picow_ws2812_devtools", "ledwall_server"]
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report xml --cov-report html --cov-report lcov --import-mode=importlib"

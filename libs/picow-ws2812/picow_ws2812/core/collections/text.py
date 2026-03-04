@@ -1,7 +1,5 @@
-from typing import List, Tuple
-
-from picow_ws2812_core.base import BaseObject, Collection
-from picow_ws2812_core.objects.char import Char
+from ..base import BaseObject, Collection
+from ..objects.char import Char
 
 
 class Text(Collection):
@@ -19,7 +17,7 @@ class Text(Collection):
     def __init__(
         self,
         text: str,
-        color: Tuple[int, int, int],
+        color: tuple[int, int, int],
         x0: int = 0,
         y0: int = 0,
     ):
@@ -38,11 +36,14 @@ class Text(Collection):
         self.text = text
         self.color = color
 
-        # all objects of this complex object
-        # are Char objects
         self.add_objects(self._create_objects(x0=x0, y0=y0))
 
-    def _create_objects(self, x0: int, y0: int) -> List[BaseObject]:
+    @property
+    def chars(self) -> list[Char]:
+        """Return the list of Char objects."""
+        return self.objects
+
+    def _create_objects(self, x0: int, y0: int) -> list[BaseObject]:
         """Create a list of Char objects.
 
         Returns:

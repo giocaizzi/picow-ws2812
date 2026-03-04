@@ -1,10 +1,19 @@
 """test text module"""
 
 import pytest
-from picow_ws2812_core.base import CHAR_HEIGHT, CHAR_WIDTH, Pixel
-from picow_ws2812_core.collections.text import Text
-from picow_ws2812_core.objects.char import Char
-from tests.conftest import TEST_COLOR, TEST_STRINGS
+
+from picow_ws2812.core.base import Pixel
+from picow_ws2812.core.collections.text import Text
+from picow_ws2812.core.objects.char import Char
+
+TEST_STRINGS = [
+    "HELLO",
+    "ciao",
+    "12345",
+    "ciao1w323vS",
+    "BAGUS!",
+]
+TEST_COLOR = (0, 255, 0)
 
 
 @pytest.mark.parametrize("text", TEST_STRINGS)
@@ -27,7 +36,7 @@ def test_text_char(text):
 
     # each element of chars has the correct attributes
     # inherit from Text init
-    for char, strchar in zip(text_obj.chars, text):
+    for char, strchar in zip(text_obj.chars, text, strict=True):
         assert isinstance(char, Char)
         # chars are written only uppercase
         assert char.char == strchar.upper()
@@ -61,7 +70,9 @@ def test_text_movement():
     text.move(dx, dy)
 
     for (initial_x, initial_y), pixel in zip(
-        initial_positions, [pixel for char in text.chars for pixel in char.pixels]
+        initial_positions,
+        [pixel for char in text.chars for pixel in char.pixels],
+        strict=True,
     ):
         assert pixel.x == initial_x + dx
         assert pixel.y == initial_y + dy

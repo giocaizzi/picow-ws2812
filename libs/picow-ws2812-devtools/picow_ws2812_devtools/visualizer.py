@@ -2,7 +2,8 @@
 
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from picow_ws2812_core import StaticSequence, StaticView
+
+from picow_ws2812.core import StaticSequence, StaticView
 
 #
 
@@ -36,8 +37,8 @@ class LedWallVisualizer:
 
         def update(frame):
             im.set_data(frame)
-            return im,  # Return a list containing the im object
+            return (im,)  # Return a list containing the im object
 
-        ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
+        _ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
 
         plt.show()

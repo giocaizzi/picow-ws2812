@@ -1,6 +1,4 @@
-from typing import List, Optional, Union
-
-from picow_ws2812_core.base import BaseObject, Collection
+from ..base import BaseObject, Collection
 
 
 class Group(Collection):
@@ -9,7 +7,7 @@ class Group(Collection):
     A Group object is a collection of objects.
     """
 
-    def __init__(self, objects: Optional[List[Union[Collection, BaseObject]]] = None):
+    def __init__(self, objects: list[Collection | BaseObject] | None = None):
         """Create a Group object."""
         super().__init__()
         if objects:
