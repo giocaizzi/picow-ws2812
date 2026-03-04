@@ -110,3 +110,14 @@ Enclosure outer depth:   20.0   [2 + 18]
 
 Diffuser thickness:      1.5
 Diffuser lip overlap:    1.5
+
+LED panel shelf height:  8.0  (above back panel; wiring cavity underneath)
+Shelf rail/rib thick:    2.0
+Panel sits at Z:         10.0  [2 back + 8 shelf]
+Panel top at Z:          13.0  [10 + 3 PCB]
+Diffusion gap:           5.5   [18.5 diffuser bottom − 13 panel top]
+
+Wiring channel gaps in cross ribs:
+  Power bus (left):      10.0
+  Injection (center):    20.0
+  Data chain (right):    10.0

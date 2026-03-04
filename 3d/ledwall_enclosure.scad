@@ -7,6 +7,7 @@
  * Setup:
  *   5x 8x32 flexible LED matrix panels (10mm pitch)
  *   stacked vertically → 40 rows × 32 cols
+ *   Elevated shelf with wiring channels (Schema 2 power injection)
  *   Raspberry Pi Pico W controller (bottom rear)
  *   DC barrel jack 5.5×2.1mm power input
  *   Wall-mounted via blind nail hole (top center)
@@ -61,11 +62,18 @@ standoff_d      = 5;        // mm standoff outer diameter
 /* [DC Barrel Jack] */
 barrel_d        = 8;        // mm panel-mount hole diameter
 
+/* [LED Panel Shelf] */
+shelf_h         = 8;        // mm height above back panel (wiring clearance)
+shelf_t         = 2;        // mm rail/rib wall thickness
+chan_bus_w      = 10;       // mm power bus channel width (left, in cross ribs)
+chan_inj_w      = 20;       // mm injection wire channel width (center, in cross ribs)
+chan_data_w     = 10;       // mm data chain channel width (right, in cross ribs)
+
 /* [Wall Mount - Blind Nail Hole] */
 mount_head_d    = 10;       // mm wide entry (nail head)
 mount_shaft_d   = 4;        // mm narrow slot (nail shaft)
 mount_slot_len  = 8;        // mm slot travel length
-mount_depth     = 12;       // mm total hole depth from exterior
+mount_depth     = back + shelf_h; // mm total (flush with shelf surface)
 mount_floor     = 2;        // mm closed-end thickness (prevents nail perforation)
 
 /* [USB Cutout] */
@@ -99,6 +107,10 @@ dif_r       = in_r + diff_lip;
 pico_x      = enc_w / 2 - pico_w / 2;
 pico_y      = wall + 2;                         // 2mm from inner bottom wall
 pico_z      = back;
+
+// LED panel shelf positions
+led_x0      = wall + margin;                    // 8 - X start of LED area
+led_y0      = wall + margin;                    // 8 - Y start of LED area
 
 // Blind nail mount position: top-center of back panel
 mount_x         = enc_w / 2;
@@ -144,6 +156,60 @@ module standoff(od, id, h) {
         translate([0, 0, -0.1])
             cylinder(d = id, h = h + 0.2, $fn = 20);
     }
+}
+
+/// Elevated shelf for LED panels (wiring channels underneath for Schema 2)
+module led_shelf() {
+    // Left perimeter rail (in margin area)
+    translate([wall, led_y0, back])
+        cube([margin, led_h, shelf_h]);
+
+    // Right perimeter rail (in margin area)
+    translate([led_x0 + led_w, led_y0, back])
+        cube([margin, led_h, shelf_h]);
+
+    // Bottom edge rail — split for Pico W clearance (center gap)
+    pico_gap   = pico_w + 10;
+    pico_gap_x = enc_w / 2 - pico_gap / 2;
+    translate([wall, wall, back])
+        cube([pico_gap_x - wall, margin, shelf_h]);
+    translate([pico_gap_x + pico_gap, wall, back])
+        cube([wall + cav_w - pico_gap_x - pico_gap, margin, shelf_h]);
+
+    // Top edge rail
+    translate([wall, led_y0 + led_h, back])
+        cube([cav_w, margin, shelf_h]);
+
+    // Cross ribs between panels (with bus, injection, and data channels)
+    for (i = [1 : num_panels - 1]) {
+        rib_y   = led_y0 + i * pan_h - shelf_t / 2;
+        bus_end = wall + chan_bus_w;
+        inj_x0  = enc_w / 2 - chan_inj_w / 2;
+        inj_x1  = enc_w / 2 + chan_inj_w / 2;
+        data_x0 = led_x0 + led_w + margin - chan_data_w;
+
+        // Segment 1: bus channel end → injection channel start
+        translate([bus_end, rib_y, back])
+            cube([inj_x0 - bus_end, shelf_t, shelf_h]);
+
+        // Segment 2: injection channel end → data channel start
+        translate([inj_x1, rib_y, back])
+            cube([data_x0 - inj_x1, shelf_t, shelf_h]);
+    }
+
+    // Interior Y-direction support ribs (reduced height for wire crossing)
+    center_rib_h = shelf_h - 3;
+    for (fx = [1/3, 2/3]) {
+        rib_x = led_x0 + led_w * fx - shelf_t / 2;
+        translate([rib_x, led_y0, back])
+            cube([shelf_t, led_h, center_rib_h]);
+    }
+}
+
+/// LED panel visual model (preview only, not for printing)
+module led_panel_visual() {
+    color("Black", 0.5)
+        cube([led_w, pan_h, led_pcb_thick]);
 }
 
 // ================================================================
@@ -204,14 +270,8 @@ module enclosure() {
                 standoff(standoff_d, pico_hole_d, standoff_h);
     }
 
-    // --- LED panel alignment ribs (between panels) ---
-    for (i = [1 : num_panels - 1])
-        translate([
-            wall + margin,
-            wall + margin + i * pan_h - 1,
-            back
-        ])
-            cube([led_w, 2, 3]);
+    // --- LED panel shelf (elevated surface with wiring channels) ---
+    led_shelf();
 }
 
 // ================================================================
@@ -251,6 +311,7 @@ module pico_visual() {
 show_body       = true;
 show_diffuser   = true;
 show_pico       = true;
+show_panels     = true;
 explode         = false;
 
 ex = explode ? 40 : 0;
@@ -262,6 +323,11 @@ if (show_body)
 if (show_pico)
     translate([pico_x, pico_y, back + standoff_h])
         pico_visual();
+
+if (show_panels)
+    for (i = [0 : num_panels - 1])
+        translate([led_x0, led_y0 + i * pan_h, back + shelf_h])
+            led_panel_visual();
 
 if (show_diffuser)
     translate([
