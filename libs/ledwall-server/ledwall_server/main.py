@@ -8,6 +8,7 @@ from fastapi import FastAPI
 
 from ledwall_server.api.routes import configure, router
 from ledwall_server.config import settings
+from ledwall_server.plugins.bitcoin import Bitcoin
 from ledwall_server.plugins.clock import Clock
 from ledwall_server.plugins.effect import ColorCycle, Rainbow, SolidColor
 from ledwall_server.plugins.image import AnimatedGif, StaticImage
@@ -26,6 +27,7 @@ PLUGIN_REGISTRY: dict[str, type] = {
     "static_text": StaticText,
     "scrolling_text": ScrollingText,
     "weather": Weather,
+    "bitcoin": Bitcoin,
     "static_image": StaticImage,
     "animated_gif": AnimatedGif,
 }
@@ -60,6 +62,14 @@ SCENE_REGISTRY: dict[str, list[dict]] = {
             "y": 0,
         },
     ],
+    "bitcoin": [
+        {
+            "plugin": "bitcoin",
+            "config": {},
+            "x": 0,
+            "y": 0,
+        },
+    ],
     "dashboard": [
         {
             "plugin": "weather",
@@ -67,22 +77,30 @@ SCENE_REGISTRY: dict[str, list[dict]] = {
             "x": 0,
             "y": 0,
             "w": 16,
-            "h": 16,
+            "h": 8,
+        },
+        {
+            "plugin": "bitcoin",
+            "config": {},
+            "x": 16,
+            "y": 0,
+            "w": 16,
+            "h": 8,
         },
         {
             "plugin": "clock",
             "config": {"color": [0, 255, 0]},
-            "x": 16,
-            "y": 0,
+            "x": 0,
+            "y": 8,
             "w": 16,
-            "h": 16,
+            "h": 8,
         },
         {
             "plugin": "scrolling_text",
             "config": {"text": "LED WALL DASHBOARD", "color": [255, 200, 0]},
-            "x": 0,
-            "y": 16,
-            "w": 32,
+            "x": 16,
+            "y": 8,
+            "w": 16,
             "h": 8,
         },
     ],
