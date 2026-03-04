@@ -1,0 +1,112 @@
+Ledwall Enclosure - Component Dimensions Reference
+====================================================
+All dimensions in millimeters (mm).
+Sources: Official Raspberry Pi Pico W Datasheet (RP-008312-DS),
+         WS2812B 8x32 flexible matrix panel datasheets.
+Last updated: 2026-03-04
+
+
+1. RASPBERRY PI PICO W
+-----------------------
+Board length:            51.0
+Board width:             21.0
+PCB thickness:           1.0
+Board height (components, no USB): 3.7
+Board height (with USB connector): 6.7
+Weight:                  ~3g
+
+USB connector:           Micro-USB Type B
+USB connector width:     8.0
+USB connector height:    ~3.0 (above PCB bottom)
+USB overhang past PCB edge: ~1.5
+
+Mounting holes:          4x through-hole
+Mounting hole diameter:  2.1 (fits M2 screws)
+Hole spacing lengthwise: 47.0 (center to center)
+Hole spacing widthwise:  11.4 (center to center)
+Hole offset from edge (length): 2.0
+Hole offset from edge (width):  4.8
+
+RP2040 chip:             7mm x 7mm (center of board)
+CYW43439 wireless module: near top of board
+Antenna:                 on-board, top edge
+BOOTSEL button:          under USB connector, left side
+LED:                     left of USB connector (WL_GPIO0)
+Debug pads (SWD):        below RP2040, right side
+
+
+2. WS2812B 8x32 FLEXIBLE LED MATRIX PANEL
+-------------------------------------------
+LED type:                WS2812B (5050 package, 5mm x 5mm)
+Rows per panel:          8
+Columns per panel:       32
+Total LEDs per panel:    256
+
+LED pitch (X):           10.0
+LED pitch (Y):           10.0
+Panel width:             320.0 (32 x 10mm)
+Panel height:            80.0  (8 x 10mm)
+Panel thickness (PCB + LED): ~3.0 (flexible PCB)
+
+Data protocol:           Single-wire NZR, 800kHz
+Operating voltage:       5V DC
+Max current per LED:     ~60mA (full white)
+Max current per panel:   ~15.4A (full white, derated)
+Typical current per panel: ~3-5A (mixed content)
+
+Data input/output:       3-pin (5V, DIN/DOUT, GND)
+Power input:             Separate 5V and GND pads (thick traces)
+
+
+3. LED WALL ASSEMBLY (5 panels stacked)
+-----------------------------------------
+Total rows:              40 (5 panels x 8 rows)
+Total columns:           32
+Total LEDs:              1280
+
+Total width:             320.0
+Total height:            400.0
+Total active area:       128,000 mm² (1,280 cm²)
+
+Panel stacking:          Vertical (panels arranged top-to-bottom)
+Wiring:                  Data chain from panel 1 → 2 → 3 → 4 → 5
+Power:                   Parallel feed to each panel recommended
+
+Max combined current:    ~77A (full white, theoretical max)
+Typical current:         ~15-25A (mixed content)
+Power supply spec:       5V 10A (project spec: conservative/dimmed usage)
+
+
+4. DC BARREL JACK (5.5 x 2.1mm, panel mount)
+----------------------------------------------
+Inner pin diameter:      2.1
+Outer barrel diameter:   5.5
+Panel mount hole:        8.0 (drill diameter)
+Flange diameter:         ~11.0
+Body length (behind panel): ~14.0
+Nut thread length:       ~8.0
+Nut diameter:            ~10.0
+
+
+5. MICRO-USB CABLE PLUG (typical)
+-----------------------------------
+Plug body width:         ~12.0
+Plug body height:        ~6.5
+Plug body length:        ~9.0
+(Note: varies by cable manufacturer)
+
+
+6. ENCLOSURE DESIGN PARAMETERS (calculated)
+---------------------------------------------
+LED area margin:         5.0 (around LED grid inside enclosure)
+Wall thickness:          3.0
+Back panel thickness:    2.0
+Corner radius:           8.0
+Internal depth:          18.0
+
+Enclosure outer width:   336.0  [320 + 2*(5+3)]
+Enclosure outer height:  416.0  [400 + 2*(5+3)]
+Enclosure outer depth:   20.0   [2 + 18]
+
+Diffuser thickness:      1.5
+Diffuser lip overlap:    1.5
