@@ -1,3 +1,4 @@
-# picow-ledwall
+# picow-ws2812-backend
 
-A Micropython package to power a ws2812b ledwall matrix.
+The backend of the picow-ws2812 project.
+    
