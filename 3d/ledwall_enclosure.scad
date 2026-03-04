@@ -9,7 +9,7 @@
  *   stacked vertically → 40 rows × 32 cols
  *   Raspberry Pi Pico W controller (bottom rear)
  *   DC barrel jack 5.5×2.1mm power input
- *   Wall-mounted via keyhole slots
+ *   Wall-mounted via blind nail hole (top center)
  *
  * Coordinate system:
  *   X = width  (horizontal, left → right)
@@ -61,10 +61,12 @@ standoff_d      = 5;        // mm standoff outer diameter
 /* [DC Barrel Jack] */
 barrel_d        = 8;        // mm panel-mount hole diameter
 
-/* [Wall Mount Keyholes] */
-key_wide        = 10;       // mm wide part (screw head entry)
-key_narrow      = 5;        // mm narrow part (screw shaft)
-key_slot        = 8;        // mm slot length
+/* [Wall Mount - Blind Nail Hole] */
+mount_head_d    = 10;       // mm wide entry (nail head)
+mount_shaft_d   = 4;        // mm narrow slot (nail shaft)
+mount_slot_len  = 8;        // mm slot travel length
+mount_depth     = 12;       // mm total hole depth from exterior
+mount_floor     = 2;        // mm closed-end thickness (prevents nail perforation)
 
 /* [USB Cutout] */
 usb_cut_w       = 14;       // mm width (USB plug + clearance)
@@ -98,6 +100,12 @@ pico_x      = enc_w / 2 - pico_w / 2;
 pico_y      = wall + 2;                         // 2mm from inner bottom wall
 pico_z      = back;
 
+// Blind nail mount position: top-center of back panel
+mount_x         = enc_w / 2;
+mount_y         = enc_h - 28;                   // wide entry Y
+mount_boss_h    = mount_depth - back;           // boss protrusion into cavity
+mount_cut_depth = mount_depth - mount_floor;    // cut depth (leaves closed floor)
+
 // ================================================================
 // PRIMITIVE MODULES
 // ================================================================
@@ -110,13 +118,23 @@ module rbox(w, h, d, r) {
                 cylinder(r = r, h = d);
 }
 
-/// Keyhole wall-mount slot (screw head enters wide, slides into narrow)
-module keyhole(wd, nw, sl, th) {
-    cylinder(d = wd, h = th);
-    translate([-nw / 2, 0, 0])
-        cube([nw, sl, th]);
-    translate([0, sl, 0])
-        cylinder(d = nw, h = th);
+/// Blind mount boss - solid cylinder on interior of back panel
+module mount_boss() {
+    translate([0, 0, back])
+        hull() {
+            cylinder(d = mount_head_d + 2 * wall, h = mount_boss_h);
+            translate([0, mount_slot_len, 0])
+                cylinder(d = mount_shaft_d + 2 * wall, h = mount_boss_h);
+        }
+}
+
+/// Blind keyhole cut - wide entry at bottom (nail head), narrow rest at top
+module mount_cut() {
+    cylinder(d = mount_head_d, h = mount_cut_depth);
+    translate([-mount_shaft_d / 2, 0, 0])
+        cube([mount_shaft_d, mount_slot_len, mount_cut_depth]);
+    translate([0, mount_slot_len, 0])
+        cylinder(d = mount_shaft_d, h = mount_cut_depth);
 }
 
 /// Single mounting standoff with screw hole
@@ -134,47 +152,46 @@ module standoff(od, id, h) {
 
 module enclosure() {
     difference() {
-        // --- Outer shell ---
-        rbox(enc_w, enc_h, enc_d, radius);
+        union() {
+            // --- Main shell ---
+            difference() {
+                // --- Outer shell ---
+                rbox(enc_w, enc_h, enc_d, radius);
 
-        // --- Inner cavity ---
-        translate([wall, wall, back])
-            rbox(cav_w, cav_h, cavity_depth + 1, in_r);
+                // --- Inner cavity ---
+                translate([wall, wall, back])
+                    rbox(cav_w, cav_h, cavity_depth + 1, in_r);
 
-        // --- Diffuser recess (front step) ---
-        translate([wall - diff_lip, wall - diff_lip, enc_d - diff_thick])
-            rbox(dif_w, dif_h, diff_thick + 1, dif_r);
+                // --- Diffuser recess (front step) ---
+                translate([wall - diff_lip, wall - diff_lip, enc_d - diff_thick])
+                    rbox(dif_w, dif_h, diff_thick + 1, dif_r);
 
-        // --- USB cutout (bottom wall, centered on Pico W) ---
-        translate([
-            enc_w / 2 - usb_cut_w / 2,
-            -0.5,
-            back + standoff_h - 1
-        ])
-            cube([usb_cut_w, wall + 1, usb_cut_h]);
+                // --- USB cutout (bottom wall, centered on Pico W) ---
+                translate([
+                    enc_w / 2 - usb_cut_w / 2,
+                    -0.5,
+                    back + standoff_h - 1
+                ])
+                    cube([usb_cut_w, wall + 1, usb_cut_h]);
 
-        // --- DC barrel jack hole (bottom wall, offset right) ---
-        translate([
-            enc_w / 2 + 50,
-            -0.5,
-            back + cavity_depth / 2
-        ])
-            rotate([-90, 0, 0])
-                cylinder(d = barrel_d, h = wall + 1);
+                // --- DC barrel jack hole (bottom wall, offset right) ---
+                translate([
+                    enc_w / 2 + 50,
+                    -0.5,
+                    back + cavity_depth / 2
+                ])
+                    rotate([-90, 0, 0])
+                        cylinder(d = barrel_d, h = wall + 1);
+            }
 
-        // --- Wall-mount keyholes (back panel) ---
-        // Two at top corners
-        for (sx = [-1, 1])
-            translate([
-                enc_w / 2 + sx * (enc_w / 2 - 30),
-                enc_h - 40,
-                -0.5
-            ])
-                keyhole(key_wide, key_narrow, key_slot, back + 1);
+            // --- Blind nail mount boss (solid, interior of back panel) ---
+            translate([mount_x, mount_y, 0])
+                mount_boss();
+        }
 
-        // One at bottom center
-        translate([enc_w / 2, 40, -0.5])
-            keyhole(key_wide, key_narrow, key_slot, back + 1);
+        // --- Blind nail mount cut (keyhole, closed floor prevents perforation) ---
+        translate([mount_x, mount_y, 0])
+            mount_cut();
     }
 
     // --- Pico W mounting standoffs ---
