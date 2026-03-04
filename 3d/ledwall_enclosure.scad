@@ -6,7 +6,7 @@
  *
  * Setup:
  *   5x 8x32 flexible LED matrix panels (10mm pitch)
- *   stacked vertically → 40 rows × 32 cols
+ *   arranged horizontally → 32 rows × 40 cols (landscape)
  *   Elevated shelf with wiring channels (Schema 2 power injection)
  *   Raspberry Pi Pico W controller (bottom rear)
  *   DC barrel jack 5.5×2.1mm power input
@@ -27,11 +27,11 @@
 // ================================================================
 
 /* [LED Matrix] */
-led_cols        = 32;       // columns
-led_rows        = 40;       // total rows (5 panels × 8)
+led_cols        = 40;       // columns (5 panels × 8, landscape)
+led_rows        = 32;       // total rows
 led_pitch       = 10;       // mm between LED centers
-num_panels      = 5;        // number of 8×32 panels
-panel_rows      = 8;        // rows per panel
+num_panels      = 5;        // number of 8×32 panels (arranged horizontally)
+panel_cols      = 8;        // columns per panel (each panel rotated 90°)
 led_pcb_thick   = 3;        // mm flexible PCB + LEDs
 
 /* [Enclosure] */
@@ -87,16 +87,16 @@ $fn             = 60;
 // DERIVED DIMENSIONS
 // ================================================================
 
-led_w       = led_cols * led_pitch;             // 320
-led_h       = led_rows * led_pitch;             // 400
-pan_h       = panel_rows * led_pitch;           // 80
+led_w       = led_cols * led_pitch;             // 400
+led_h       = led_rows * led_pitch;             // 320
+pan_w       = panel_cols * led_pitch;           // 80
 
-enc_w       = led_w + 2 * (margin + wall);      // 336
-enc_h       = led_h + 2 * (margin + wall);      // 416
+enc_w       = led_w + 2 * (margin + wall);      // 416
+enc_h       = led_h + 2 * (margin + wall);      // 336
 enc_d       = back + cavity_depth;              // 20
 
-cav_w       = enc_w - 2 * wall;                 // 330
-cav_h       = enc_h - 2 * wall;                 // 410
+cav_w       = enc_w - 2 * wall;                 // 410
+cav_h       = enc_h - 2 * wall;                 // 330
 in_r        = max(1, radius - wall);            // 5
 
 dif_w       = cav_w + 2 * diff_lip;
@@ -182,37 +182,37 @@ module led_shelf() {
     translate([wall, led_y0 + led_h, back])
         cube([cav_w, margin, shelf_h]);
 
-    // Cross ribs between panels (with bus, injection, and data channels)
+    // Cross ribs between panels (now vertical, between horizontally-arranged panels)
     for (i = [1 : num_panels - 1]) {
-        rib_y   = led_y0 + i * pan_h - shelf_t / 2;
-        bus_end = wall + chan_bus_w;
-        inj_x0  = enc_w / 2 - chan_inj_w / 2;
-        inj_x1  = enc_w / 2 + chan_inj_w / 2;
-        data_x0 = led_x0 + led_w + margin - chan_data_w;
+        rib_x    = led_x0 + i * pan_w - shelf_t / 2;
+        bus_end  = wall + chan_bus_w;
+        inj_y0   = enc_h / 2 - chan_inj_w / 2;
+        inj_y1   = enc_h / 2 + chan_inj_w / 2;
+        data_y0  = led_y0 + led_h + margin - chan_data_w;
 
-        // Segment 1: left solid section — gap on left passes power bus wires
-        translate([bus_end, rib_y, back])
-            cube([inj_x0 - bus_end, shelf_t, shelf_h]);
+        // Segment 1: bottom solid section — gap at bottom passes power bus wires
+        translate([rib_x, bus_end, back])
+            cube([shelf_t, inj_y0 - bus_end, shelf_h]);
 
-        // Segment 2: right solid section — center gap passes injection wires,
-        //            gap on right passes data chain wires to next panel
-        translate([inj_x1, rib_y, back])
-            cube([data_x0 - inj_x1, shelf_t, shelf_h]);
+        // Segment 2: top solid section — center gap passes injection wires,
+        //            gap at top passes data chain wires to next panel
+        translate([rib_x, inj_y1, back])
+            cube([shelf_t, data_y0 - inj_y1, shelf_h]);
     }
 
-    // Interior Y-direction support ribs (reduced height for wire crossing)
+    // Interior X-direction support ribs (reduced height for wire crossing)
     center_rib_h = shelf_h - 3;
-    for (fx = [1/3, 2/3]) {
-        rib_x = led_x0 + led_w * fx - shelf_t / 2;
-        translate([rib_x, led_y0, back])
-            cube([shelf_t, led_h, center_rib_h]);
+    for (fy = [1/3, 2/3]) {
+        rib_y = led_y0 + led_h * fy - shelf_t / 2;
+        translate([led_x0, rib_y, back])
+            cube([led_w, shelf_t, center_rib_h]);
     }
 }
 
 /// LED panel visual model (preview only, not for printing)
 module led_panel_visual() {
     color("Black", 0.5)
-        cube([led_w, pan_h, led_pcb_thick]);
+        cube([pan_w, led_h, led_pcb_thick]);
 }
 
 // ================================================================
@@ -330,9 +330,9 @@ if (show_pico)
         pico_visual();
 
 if (show_panels)
-    // stack 5 panels vertically on top of the shelf surface
+    // arrange 5 panels horizontally on top of the shelf surface
     for (i = [0 : num_panels - 1])
-        translate([led_x0, led_y0 + i * pan_h, back + shelf_h])
+        translate([led_x0 + i * pan_w, led_y0, back + shelf_h])
             led_panel_visual();
 
 if (show_diffuser)
