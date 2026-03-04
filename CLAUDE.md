@@ -36,6 +36,9 @@ Python server and micropython code for the Pico W.
 
 OpenSCAD files for the ledwall enclosure and mounting brackets.
 
+Dimensions reference is [dimensions file](./3d/dimensions.txt).
+Keep this up to date.
+
 
 ## Setup specs:
 
