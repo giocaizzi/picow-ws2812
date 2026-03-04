@@ -12,9 +12,7 @@ The `picow-s2812` package is **Micropython-only**. Do not include any Python cod
 
 ---
 
-# Quick Reference
-
-## Project structure:
+# Project structure:
 
 ### Backend
 
@@ -39,9 +37,16 @@ OpenSCAD files for the ledwall enclosure and mounting brackets.
 Dimensions reference is [dimensions file](./3d/dimensions.txt).
 Keep this up to date.
 
+---
 
-## Setup specs:
+# Setup specs:
 
 - Raspberry Pi Pico W
 - 5x 8x32 ws2812 strips stacked vertically (total 40x32)
 - 5V 10A power supply
+
+---
+
+# Documentation
+
+All documentation lives in [docs](./docs) folder.
