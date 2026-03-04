@@ -123,6 +123,7 @@ mount_cut_depth = mount_depth - mount_floor;    // cut depth (leaves closed floo
 // ================================================================
 
 /// Rounded box from origin corner
+/// w, h = footprint; d = extrusion depth; r = corner radius
 module rbox(w, h, d, r) {
     hull()
         for (x = [r, w - r], y = [r, h - r])
@@ -150,6 +151,7 @@ module mount_cut() {
 }
 
 /// Single mounting standoff with screw hole
+/// od = outer diameter; id = inner (screw) hole diameter; h = height
 module standoff(od, id, h) {
     difference() {
         cylinder(d = od, h = h);
@@ -188,11 +190,12 @@ module led_shelf() {
         inj_x1  = enc_w / 2 + chan_inj_w / 2;
         data_x0 = led_x0 + led_w + margin - chan_data_w;
 
-        // Segment 1: bus channel end → injection channel start
+        // Segment 1: left solid section — gap on left passes power bus wires
         translate([bus_end, rib_y, back])
             cube([inj_x0 - bus_end, shelf_t, shelf_h]);
 
-        // Segment 2: injection channel end → data channel start
+        // Segment 2: right solid section — center gap passes injection wires,
+        //            gap on right passes data chain wires to next panel
         translate([inj_x1, rib_y, back])
             cube([data_x0 - inj_x1, shelf_t, shelf_h]);
     }
@@ -261,9 +264,10 @@ module enclosure() {
     }
 
     // --- Pico W mounting standoffs ---
+    // dx/dy: offset from board edge to nearest mounting hole center
     translate([pico_x, pico_y, back]) {
-        dx = (pico_w - pico_hole_sp_w) / 2;
-        dy = (pico_l - pico_hole_sp_l) / 2;
+        dx = (pico_w - pico_hole_sp_w) / 2;  // 4.8 mm
+        dy = (pico_l - pico_hole_sp_l) / 2;  // 2.0 mm
         for (x = [dx, dx + pico_hole_sp_w],
              y = [dy, dy + pico_hole_sp_l])
             translate([x, y, 0])
@@ -310,26 +314,29 @@ module pico_visual() {
 /* [Display] */
 show_body       = true;
 show_diffuser   = true;
-show_pico       = true;
+show_pico       = false;
 show_panels     = true;
-explode         = false;
+explode         = true;  // set to true to separate diffuser for inspection
 
-ex = explode ? 40 : 0;
+ex = explode ? 40 : 0;  // Z offset applied to diffuser when exploded
 
 if (show_body)
     color("DimGray")
         enclosure();
 
 if (show_pico)
+    // board surface sits flush on top of standoffs
     translate([pico_x, pico_y, back + standoff_h])
         pico_visual();
 
 if (show_panels)
+    // stack 5 panels vertically on top of the shelf surface
     for (i = [0 : num_panels - 1])
         translate([led_x0, led_y0 + i * pan_h, back + shelf_h])
             led_panel_visual();
 
 if (show_diffuser)
+    // diffuser seats into front recess; explode lifts it forward for inspection
     translate([
         wall - diff_lip,
         wall - diff_lip,
