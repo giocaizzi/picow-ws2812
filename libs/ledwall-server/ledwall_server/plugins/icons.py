@@ -1,18 +1,18 @@
 """Bitmap icon set for LED wall plugins.
 
-Each icon is a list of strings where '1' = pixel on, '0'/'.' = pixel off.
-Icons are 7x7 or 8x8, designed for low-resolution LED displays.
+Each icon is a list of strings where '1' = pixel on, '.' = pixel off.
+All icons are 7x7, designed for low-resolution LED displays.
 """
 
 ICONS: dict[str, list[str]] = {
     "sun": [
-        "..010..",
-        ".00100.",
-        "0011100",
+        "...1...",
+        "...1...",
+        "..111..",
         "1111111",
-        "0011100",
-        ".00100.",
-        "..010..",
+        "..111..",
+        "...1...",
+        "...1...",
     ],
     "cloud": [
         ".......",
@@ -24,10 +24,10 @@ ICONS: dict[str, list[str]] = {
         ".......",
     ],
     "cloud_sun": [
-        "....01.",
-        "..0010.",
-        ".01111.",
-        "0111111",
+        ".....1.",
+        "....1..",
+        "..1111.",
+        ".111111",
         "1111111",
         "1111111",
         ".......",
@@ -78,13 +78,13 @@ ICONS: dict[str, list[str]] = {
         ".......",
     ],
     "thermometer": [
-        "..01...",
+        "...1...",
         "..11...",
-        "..01...",
+        "...1...",
         "..11...",
-        ".0110..",
+        "..11...",
         ".1111..",
-        ".0110..",
+        "..11...",
     ],
     "bitcoin": [
         "..11...",
