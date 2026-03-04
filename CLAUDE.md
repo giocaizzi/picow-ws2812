@@ -16,6 +16,10 @@ The `picow-s2812` package is **Micropython-only**. Do not include any Python cod
 
 ## Project structure:
 
+### Backend
+
+Python server and micropython code for the Pico W. 
+
 ```
 -/libs
     /picow-ws2812 :
@@ -28,8 +32,13 @@ The `picow-s2812` package is **Micropython-only**. Do not include any Python cod
 - pyproject.toml : Root uv workspace configuration
 ```   
 
----
+### 3D models
 
-# Notebooks
+OpenSCAD files for the ledwall enclosure and mounting brackets.
 
-The [notebooks](./notebooks) contain notebooks used to preview the WS2812 effects and animations. Keep it up to date.
+
+## Setup specs:
+
+- Raspberry Pi Pico W
+- 5x 8x32 ws2812 strips stacked vertically (total 40x32)
+- 5V 10A power supply
