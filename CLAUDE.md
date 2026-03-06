@@ -42,7 +42,7 @@ Keep this up to date.
 # Setup specs:
 
 - Raspberry Pi Pico W
-- 5x 8x32 ws2812 strips stacked vertically (total 40x32)
+- 5x 32x8 ws2812 strips stacked vertically ( 32 width x 40 height total )
 - 5V 10A power supply
 
 ---
