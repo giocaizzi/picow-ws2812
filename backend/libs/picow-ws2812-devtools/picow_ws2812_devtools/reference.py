@@ -88,19 +88,20 @@ def _render_frame_dots(ax: plt.Axes, frame: np.ndarray, radius: float = 0.35) ->
 
 
 def generate_icons_sheet(out_dir: Path) -> None:
-    """Generate a reference sheet for all icons in both sizes."""
+    """Generate a reference sheet for all icons, rendered inside 8x8 canvases."""
     icon_names = list(ICONS_L.keys())
-    ncols = 4
+    ncols = 6
     nrows = (len(icon_names) + ncols - 1) // ncols
+    canvas_size = 8
 
-    for label, icons, _icon_px, radius in [
-        ("Icons — L (7x7)", ICONS_L, 7, 0.4),
-        ("Icons — S (5x5)", ICONS_S, 5, 0.35),
+    for label, _icons, icon_size in [
+        ("Icons — L (7x7 in 8x8)", ICONS_L, IconSize.L),
+        ("Icons — S (5x5 in 8x8)", ICONS_S, IconSize.S),
     ]:
         fig, axes = plt.subplots(
             nrows,
             ncols,
-            figsize=(10, 2.5 * nrows),
+            figsize=(3 * ncols, 3 * nrows),
             gridspec_kw={"hspace": 0.5, "wspace": 0.3},
         )
         fig.set_facecolor("black")
@@ -108,7 +109,18 @@ def generate_icons_sheet(out_dir: Path) -> None:
 
         for i, name in enumerate(icon_names):
             color = _ICON_COLORS.get(name, (255, 255, 255))
-            _render_bitmap(axes[i], icons[name], color, radius)
+            canvas = np.zeros((canvas_size, canvas_size, 3), dtype=np.uint8)
+            elem = IconElement(
+                0,
+                0,
+                canvas_size,
+                canvas_size,
+                icon=name,
+                color=color,
+                icon_size=icon_size,
+            )
+            elem.draw(canvas)
+            _render_frame_dots(axes[i], canvas, radius=0.35)
             axes[i].set_title(name, fontsize=10, color="white", pad=8)
 
         for i in range(len(icon_names), len(axes)):
@@ -116,7 +128,7 @@ def generate_icons_sheet(out_dir: Path) -> None:
             axes[i].axis("off")
 
         fig.suptitle(label, fontsize=14, fontweight="bold", color="white", y=0.98)
-        suffix = label.split("—")[1].strip().split()[0]
+        suffix = "L" if icon_size == IconSize.L else "S"
         path = out_dir / f"icons_{suffix}.png"
         fig.savefig(str(path), facecolor="black", bbox_inches="tight", dpi=150)
         plt.close(fig)
@@ -124,86 +136,79 @@ def generate_icons_sheet(out_dir: Path) -> None:
 
 
 def generate_fonts_sheet(out_dir: Path) -> None:
-    """Generate a reference sheet showing text at different font sizes."""
-    sample = "AaBb0123!@#"
-    sizes = [6, 7, 8, 10, 12, 14]
-    colors = [
-        (255, 255, 255),
-        (0, 200, 255),
-        (255, 200, 0),
-        (0, 255, 100),
-        (255, 100, 100),
-        (200, 150, 255),
+    """Generate per-size font reference sheets with full character sets."""
+    rows = [
+        ("UPPERCASE", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+        ("lowercase", "abcdefghijklmnopqrstuvwxyz"),
+        ("Digits", "0123456789"),
+        ("Symbols", "!@#$%^&*()-_=+[]{}|;:',.<>?/~`\"\\"),
+        ("Currency/Units", "$+-.:°"),
     ]
+    sizes = [6, 7, 8, 10, 12]
+    color = (255, 255, 255)
 
-    fig, axes = plt.subplots(
-        len(sizes),
-        1,
-        figsize=(12, 2 * len(sizes)),
-        gridspec_kw={"hspace": 0.6},
-    )
-    fig.set_facecolor("black")
-
-    for i, (size, color) in enumerate(zip(sizes, colors, strict=True)):
-        tw, th = measure_text(sample, font_size=size)
-        # Add padding
-        canvas_w = tw + 4
-        canvas_h = th + 4
-        frame = render_text(sample, canvas_w, canvas_h, color, x=2, font_size=size)
-        _render_frame_dots(axes[i], frame, radius=0.35)
-        axes[i].set_title(
-            f"Font size {size}  ({tw}x{th} px)",
-            fontsize=10,
-            color="white",
-            pad=8,
+    for size in sizes:
+        nrows = len(rows)
+        fig, axes = plt.subplots(
+            nrows,
+            1,
+            figsize=(14, 2.2 * nrows),
+            gridspec_kw={"hspace": 0.7},
         )
+        fig.set_facecolor("black")
 
-    fig.suptitle(
-        "Font Reference", fontsize=14, fontweight="bold", color="white", y=0.98
-    )
-    path = out_dir / "fonts.png"
-    fig.savefig(str(path), facecolor="black", bbox_inches="tight", dpi=150)
-    plt.close(fig)
-    print(f"  png: {path.name}", file=sys.stderr)
+        for i, (label, chars) in enumerate(rows):
+            tw, th = measure_text(chars, font_size=size)
+            canvas_w = tw + 4
+            canvas_h = th + 4
+            frame = render_text(chars, canvas_w, canvas_h, color, x=2, font_size=size)
+            _render_frame_dots(axes[i], frame, radius=0.35)
+            axes[i].set_title(
+                f"{label}  ({tw}x{th} px)",
+                fontsize=10,
+                color="white",
+                pad=8,
+            )
+
+        fig.suptitle(
+            f"Font size {size}",
+            fontsize=14,
+            fontweight="bold",
+            color="white",
+            y=0.98,
+        )
+        path = out_dir / f"font_{size}.png"
+        fig.savefig(str(path), facecolor="black", bbox_inches="tight", dpi=150)
+        plt.close(fig)
+        print(f"  png: {path.name}", file=sys.stderr)
 
 
 def generate_elements_sheet(out_dir: Path) -> None:
-    """Generate a reference sheet showing all element types."""
-    demos: list[tuple[str, int, int, list]] = [
+    """Generate a reference sheet showing all element types in 32x8 canvases."""
+    # All demos use a consistent 32x8 canvas for scale comparison
+    w, h = 32, 8
+    demos: list[tuple[str, list]] = [
         (
             "TextElement",
-            24,
-            8,
             [
-                TextElement(0, 0, 24, 8, text="Hello", color=(255, 255, 255)),
+                TextElement(0, 0, w, h, text="Hello", color=(255, 255, 255)),
             ],
         ),
         (
             "TextElement (colored)",
-            24,
-            8,
             [
-                TextElement(0, 0, 24, 8, text="LED", color=(0, 200, 255)),
+                TextElement(0, 0, w, h, text="LED", color=(0, 200, 255)),
             ],
         ),
         (
-            "IconElement — L",
-            8,
-            8,
+            "IconElement L + S",
             [
                 IconElement(
                     0, 0, 8, 8, icon="sun", color=(255, 200, 0), icon_size=IconSize.L
                 ),
-            ],
-        ),
-        (
-            "IconElement — S",
-            6,
-            6,
-            [
                 IconElement(
-                    0,
-                    0,
+                    9,
+                    1,
                     6,
                     6,
                     icon="bitcoin",
@@ -214,63 +219,48 @@ def generate_elements_sheet(out_dir: Path) -> None:
         ),
         (
             "RectElement (filled)",
-            12,
-            8,
             [
-                RectElement(0, 0, 12, 8, color=(255, 0, 0), fill=True),
+                RectElement(0, 0, 16, h, color=(255, 0, 0), fill=True),
             ],
         ),
         (
             "RectElement (outline)",
-            12,
-            8,
             [
-                RectElement(0, 0, 12, 8, color=(0, 255, 0), fill=False),
+                RectElement(0, 0, 16, h, color=(0, 255, 0), fill=False),
             ],
         ),
         (
-            "BarElement (65%)",
-            24,
-            3,
+            "BarElement (65% / 30%)",
             [
-                BarElement(0, 0, 24, 3, value=0.65, color=(0, 200, 0), bg=(30, 30, 30)),
-            ],
-        ),
-        (
-            "BarElement (30%)",
-            24,
-            3,
-            [
+                BarElement(0, 0, w, 3, value=0.65, color=(0, 200, 0), bg=(30, 30, 30)),
                 BarElement(
-                    0, 0, 24, 3, value=0.30, color=(255, 100, 0), bg=(30, 30, 30)
+                    0, 4, w, 3, value=0.30, color=(255, 100, 0), bg=(30, 30, 30)
                 ),
             ],
         ),
         (
             "Composed",
-            32,
-            8,
             [
-                RectElement(0, 0, 32, 8, color=(20, 20, 20)),
+                RectElement(0, 0, w, h, color=(20, 20, 20)),
                 IconElement(0, 0, 8, 8, icon="sun", color=(255, 200, 0)),
-                TextElement(9, 0, 14, 8, text="22°", color=(255, 255, 255)),
-                BarElement(0, 7, 32, 1, value=0.65, color=(0, 200, 0), bg=(50, 50, 50)),
+                TextElement(9, 0, 14, h, text="22°", color=(255, 255, 255)),
+                BarElement(0, 7, w, 1, value=0.65, color=(0, 200, 0), bg=(50, 50, 50)),
             ],
         ),
     ]
 
-    ncols = 3
+    ncols = 2
     nrows = (len(demos) + ncols - 1) // ncols
     fig, axes = plt.subplots(
         nrows,
         ncols,
-        figsize=(14, 3.5 * nrows),
+        figsize=(14, 3 * nrows),
         gridspec_kw={"hspace": 0.6, "wspace": 0.3},
     )
     fig.set_facecolor("black")
     axes = axes.flatten()
 
-    for i, (title, w, h, elements) in enumerate(demos):
+    for i, (title, elements) in enumerate(demos):
         screen = Screen(title, elements)
         frame = screen.render(w, h)
         _render_frame_dots(axes[i], frame, radius=0.35)
