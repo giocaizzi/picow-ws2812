@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import argparse
 import sys
+from pathlib import Path
 
 from ledwall_server.plugins.clock import Clock
 from ledwall_server.plugins.effect import ColorCycle, Rainbow, SolidColor
 from ledwall_server.plugins.text import ScrollingText, StaticText
 from picow_ws2812_devtools.visualizer import LedWallVisualizer
+
+_PREVIEWS_DIR = Path(__file__).resolve().parents[3] / "previews"
 
 PLUGIN_REGISTRY: dict[str, tuple[type, dict]] = {
     "Rainbow": (Rainbow, {"speed": 3}),
@@ -30,8 +33,8 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument(
         "--output",
         "-o",
-        default="/tmp/ledwall_preview.png",
-        help="Output path (default: /tmp/ledwall_preview.png)",
+        default=None,
+        help="Output path (default: backend/previews/<plugin>.png or .gif)",
     )
     parser.add_argument("--width", "-W", type=int, default=32, help="LED width")
     parser.add_argument("--height", "-H", type=int, default=8, help="LED height")
@@ -45,13 +48,10 @@ def main(argv: list[str] | None = None) -> None:
 
     args = parser.parse_args(argv)
 
-    # Auto-switch extension for default output path
-    if (
-        args.gif
-        and not args.output.endswith(".gif")
-        and args.output == "/tmp/ledwall_preview.png"
-    ):
-        args.output = "/tmp/ledwall_preview.gif"
+    if args.output is None:
+        ext = ".gif" if args.gif else ".png"
+        _PREVIEWS_DIR.mkdir(exist_ok=True)
+        args.output = str(_PREVIEWS_DIR / f"{args.plugin}{ext}")
 
     plugin_cls, default_config = PLUGIN_REGISTRY[args.plugin]
     plugin = plugin_cls(default_config, args.width, args.height)

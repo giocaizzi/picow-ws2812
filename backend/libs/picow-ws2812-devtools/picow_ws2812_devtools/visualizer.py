@@ -1,7 +1,4 @@
-"""LED wall visualizer — preview plugins and scenes in matplotlib.
-
-Works in Jupyter notebooks with `%matplotlib ipympl`.
-"""
+"""LED wall visualizer — preview plugins and scenes in matplotlib."""
 
 from __future__ import annotations
 
@@ -24,21 +21,16 @@ class LedWallVisualizer:
     Each LED is rendered as a circle on a dark background,
     simulating the look of a real LED panel.
 
-    Usage in notebook::
+    Usage::
 
-        %matplotlib ipympl
-
-        from ledwall_server.plugins.effect import Rainbow
-        from picow_ws2812_devtools.visualizer import LedWallVisualizer
-
-        viz = LedWallVisualizer()
-        viz.preview_plugin(Rainbow({"speed": 3}, 32, 24))
+        uv run preview Rainbow
+        uv run preview Rainbow --gif --frames 60
 
     Args:
         width: Number of horizontal LEDs.
         height: Number of vertical LEDs.
         dot_radius: Radius of each LED dot in cell units.
-            Each cell is 1×1, so max radius is 0.5.
+            Each cell is 1x1, so max radius is 0.5.
     """
 
     def __init__(
@@ -52,7 +44,6 @@ class LedWallVisualizer:
         self.width = width
         self.height = height
         self.dot_radius = dot_radius
-        self._ani: FuncAnimation | None = None
 
     def _create_led_plot(
         self,
@@ -89,83 +80,6 @@ class LedWallVisualizer:
         alpha = np.ones((rgb.shape[0], 1))
         return np.hstack([rgb, alpha])
 
-    def render_frame(self, ax: plt.Axes, frame: np.ndarray) -> PatchCollection:
-        """Render a (H, W, 3) uint8 frame as LED dots on an existing axes."""
-        height, width = frame.shape[:2]
-        ax.set_facecolor("black")
-        ax.set_xlim(0, width)
-        ax.set_ylim(height, 0)
-        ax.set_aspect("equal")
-        ax.axis("off")
-
-        patches = [
-            Circle((col + 0.5, row + 0.5), self.dot_radius)
-            for row in range(height)
-            for col in range(width)
-        ]
-        collection = PatchCollection(patches, match_original=False)
-        collection.set_edgecolor("none")
-        collection.set_facecolor(self._frame_to_colors(frame))
-        ax.add_collection(collection)
-        return collection
-
-    def preview_plugin(
-        self,
-        plugin: BasePlugin,
-        frames: int = 100,
-        interval: int = 33,
-    ) -> None:
-        """Animate a single plugin."""
-        fig, _, collection = self._create_led_plot(
-            plugin.width, plugin.height, type(plugin).__name__
-        )
-
-        def init():
-            plugin.tick()
-            collection.set_facecolor(self._frame_to_colors(plugin.render()))
-            return (collection,)
-
-        def update(_frame_num: int):
-            plugin.tick()
-            collection.set_facecolor(self._frame_to_colors(plugin.render()))
-            return (collection,)
-
-        self._ani = FuncAnimation(
-            fig, update, init_func=init, frames=frames, interval=interval
-        )
-        plt.show()
-
-    def preview_scene(
-        self,
-        renderer: Renderer,
-        layers: list[tuple[BasePlugin, int, int]],
-        frames: int = 100,
-        interval: int = 33,
-    ) -> None:
-        """Animate a composed scene using Renderer."""
-        fig, _, collection = self._create_led_plot(
-            self.width, self.height, "Scene Preview"
-        )
-
-        def init():
-            for plugin, _, _ in layers:
-                plugin.tick()
-            frame = renderer.compose(layers)
-            collection.set_facecolor(self._frame_to_colors(frame))
-            return (collection,)
-
-        def update(_frame_num: int):
-            for plugin, _, _ in layers:
-                plugin.tick()
-            frame = renderer.compose(layers)
-            collection.set_facecolor(self._frame_to_colors(frame))
-            return (collection,)
-
-        self._ani = FuncAnimation(
-            fig, update, init_func=init, frames=frames, interval=interval
-        )
-        plt.show()
-
     def _render_single_frame(
         self,
         plugin: BasePlugin | None = None,
@@ -185,18 +99,6 @@ class LedWallVisualizer:
             self.width,
             self.height,
         )
-
-    def snapshot(
-        self,
-        plugin: BasePlugin | None = None,
-        renderer: Renderer | None = None,
-        layers: list[tuple[BasePlugin, int, int]] | None = None,
-    ) -> None:
-        """Show a single frame (no animation)."""
-        frame, width, height = self._render_single_frame(plugin, renderer, layers)
-        _, _, collection = self._create_led_plot(width, height, "Snapshot")
-        collection.set_facecolor(self._frame_to_colors(frame))
-        plt.show()
 
     def save_snapshot(
         self,
