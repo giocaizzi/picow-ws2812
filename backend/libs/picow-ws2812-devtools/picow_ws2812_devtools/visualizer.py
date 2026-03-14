@@ -116,9 +116,14 @@ class LedWallVisualizer:
         interval: int = 33,
     ) -> None:
         """Animate a single plugin."""
-        _, _, collection = self._create_led_plot(
+        fig, _, collection = self._create_led_plot(
             plugin.width, plugin.height, type(plugin).__name__
         )
+
+        def init():
+            plugin.tick()
+            collection.set_facecolor(self._frame_to_colors(plugin.render()))
+            return (collection,)
 
         def update(_frame_num: int):
             plugin.tick()
@@ -126,7 +131,7 @@ class LedWallVisualizer:
             return (collection,)
 
         self._ani = FuncAnimation(
-            collection.axes.figure, update, frames=frames, interval=interval
+            fig, update, init_func=init, frames=frames, interval=interval
         )
         plt.show()
 
@@ -138,9 +143,16 @@ class LedWallVisualizer:
         interval: int = 33,
     ) -> None:
         """Animate a composed scene using Renderer."""
-        _, _, collection = self._create_led_plot(
+        fig, _, collection = self._create_led_plot(
             self.width, self.height, "Scene Preview"
         )
+
+        def init():
+            for plugin, _, _ in layers:
+                plugin.tick()
+            frame = renderer.compose(layers)
+            collection.set_facecolor(self._frame_to_colors(frame))
+            return (collection,)
 
         def update(_frame_num: int):
             for plugin, _, _ in layers:
@@ -150,7 +162,7 @@ class LedWallVisualizer:
             return (collection,)
 
         self._ani = FuncAnimation(
-            collection.axes.figure, update, frames=frames, interval=interval
+            fig, update, init_func=init, frames=frames, interval=interval
         )
         plt.show()
 
