@@ -12,6 +12,7 @@ from ledwall_server.plugins.effect import ColorCycle, Rainbow, SolidColor
 from ledwall_server.plugins.text import ScrollingText, StaticText
 from ledwall_server.plugins.weather import Weather
 from ledwall_server.renderer import Renderer
+from picow_ws2812_devtools.reference import generate_all as generate_reference
 from picow_ws2812_devtools.visualizer import LedWallVisualizer
 
 _PREVIEWS_DIR = Path(__file__).resolve().parents[3] / "previews"
@@ -170,8 +171,8 @@ def main(argv: list[str] | None = None) -> None:
         "target",
         nargs="?",
         default="all",
-        choices=all_names + ["all"],
-        help="Plugin/scene name, or 'all' (default: all)",
+        choices=all_names + ["all", "reference"],
+        help="Plugin/scene/reference name, or 'all' (default: all)",
     )
     parser.add_argument("--width", "-W", type=int, default=32, help="LED width")
     parser.add_argument("--height", "-H", type=int, default=8, help="LED height")
@@ -185,9 +186,14 @@ def main(argv: list[str] | None = None) -> None:
 
     args = parser.parse_args(argv)
 
+    if args.target == "reference":
+        generate_reference(_PREVIEWS_DIR / "reference")
+        return
+
     if args.target == "all":
         targets = all_names
         args.gif = True
+        generate_reference(_PREVIEWS_DIR / "reference")
     else:
         targets = [args.target]
 
