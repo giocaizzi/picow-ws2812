@@ -44,4 +44,5 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 known-first-party = ["picow_ws2812", "picow_ws2812_devtools", "ledwall_server"]
 
 [tool.pytest.ini_options]
-addopts = "--cov --cov-report xml --cov-report html --cov-report lcov --import-mode=importlib"
+addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
+testpaths = ["libs/ledwall-server/tests"]

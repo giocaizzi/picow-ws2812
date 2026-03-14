@@ -154,6 +154,26 @@ class LedWallVisualizer:
         )
         plt.show()
 
+    def _render_single_frame(
+        self,
+        plugin: BasePlugin | None = None,
+        renderer: Renderer | None = None,
+        layers: list[tuple[BasePlugin, int, int]] | None = None,
+    ) -> tuple[np.ndarray, int, int]:
+        """Tick once and return (frame, width, height)."""
+        if renderer is not None and layers is not None:
+            for p, _, _ in layers:
+                p.tick()
+            return renderer.compose(layers), self.width, self.height
+        if plugin is not None:
+            plugin.tick()
+            return plugin.render(), plugin.width, plugin.height
+        return (
+            np.zeros((self.height, self.width, 3), dtype=np.uint8),
+            self.width,
+            self.height,
+        )
+
     def snapshot(
         self,
         plugin: BasePlugin | None = None,
@@ -161,19 +181,57 @@ class LedWallVisualizer:
         layers: list[tuple[BasePlugin, int, int]] | None = None,
     ) -> None:
         """Show a single frame (no animation)."""
-        if renderer is not None and layers is not None:
-            for p, _, _ in layers:
-                p.tick()
-            frame = renderer.compose(layers)
-            width, height = self.width, self.height
-        elif plugin is not None:
-            plugin.tick()
-            frame = plugin.render()
-            width, height = plugin.width, plugin.height
-        else:
-            frame = np.zeros((self.height, self.width, 3), dtype=np.uint8)
-            width, height = self.width, self.height
-
+        frame, width, height = self._render_single_frame(plugin, renderer, layers)
         _, _, collection = self._create_led_plot(width, height, "Snapshot")
         collection.set_facecolor(self._frame_to_colors(frame))
         plt.show()
+
+    def save_snapshot(
+        self,
+        path: str,
+        plugin: BasePlugin | None = None,
+        renderer: Renderer | None = None,
+        layers: list[tuple[BasePlugin, int, int]] | None = None,
+        title: str = "Snapshot",
+    ) -> None:
+        """Render a single frame and save as PNG."""
+        frame, width, height = self._render_single_frame(plugin, renderer, layers)
+        fig, _, collection = self._create_led_plot(width, height, title)
+        collection.set_facecolor(self._frame_to_colors(frame))
+        fig.savefig(path, facecolor="black", bbox_inches="tight", dpi=150)
+        plt.close(fig)
+
+    def save_animation(
+        self,
+        path: str,
+        plugin: BasePlugin | None = None,
+        renderer: Renderer | None = None,
+        layers: list[tuple[BasePlugin, int, int]] | None = None,
+        frames: int = 100,
+        interval: int = 33,
+        title: str = "Animation",
+    ) -> None:
+        """Render an animation and save as GIF."""
+        if plugin is not None:
+            width, height = plugin.width, plugin.height
+        else:
+            width, height = self.width, self.height
+
+        fig, _, collection = self._create_led_plot(width, height, title)
+
+        def update(_frame_num: int):
+            if renderer is not None and layers is not None:
+                for p, _, _ in layers:
+                    p.tick()
+                frame = renderer.compose(layers)
+            elif plugin is not None:
+                plugin.tick()
+                frame = plugin.render()
+            else:
+                frame = np.zeros((height, width, 3), dtype=np.uint8)
+            collection.set_facecolor(self._frame_to_colors(frame))
+            return (collection,)
+
+        anim = FuncAnimation(fig, update, frames=frames, interval=interval)
+        anim.save(path, writer="pillow")
+        plt.close(fig)

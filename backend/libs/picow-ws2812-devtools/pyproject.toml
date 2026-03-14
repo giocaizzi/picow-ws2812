@@ -11,6 +11,9 @@ dependencies = [
     "matplotlib>=3.10",
 ]
 
+[project.scripts]
+preview = "picow_ws2812_devtools.cli:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
