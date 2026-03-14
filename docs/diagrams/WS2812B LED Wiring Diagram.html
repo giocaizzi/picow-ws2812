@@ -123,7 +123,7 @@
 <rect x="8"  y="203" width="13" height="9" rx="2" fill="#1e2d40" stroke="#3a5070"/>
 <text x="25" y="210" fill="#c8d8e8" font-family="Share Tech Mono" font-size="6.5">GND  p38</text>
 <rect x="8"  y="225" width="13" height="9" rx="2" fill="#1e2d40" stroke="#3a5070"/>
-<text x="25" y="232" fill="#00cfff" font-family="Share Tech Mono" font-size="6.5">GP0  p1</text>
+<text x="25" y="232" fill="#00cfff" font-family="Share Tech Mono" font-size="6.5">GP28 p34</text>
 <rect x="52" y="285" width="54" height="26" rx="3" fill="#0a1520" stroke="#1e3a5a"/>
 <text x="79" y="302" text-anchor="middle" fill="#1e3050" font-family="Share Tech Mono" font-size="7">WiFi</text>
 <rect x="64" y="322" width="30" height="11" rx="2" fill="#1e2d40" stroke="#2a4060"/>
@@ -279,26 +279,32 @@
 <line x1="330" y1="462" x2="382" y2="462" stroke="#c8d8e8" stroke-width="2.2"/>
 
 <!-- ── DATA CHAIN ── -->
-<!-- GP0 → 330Ω → P1 DIN -->
-<line x1="21" y1="229"  x2="170" y2="229" stroke="#00cfff" stroke-width="2" filter="url(#fd)"/>
+<!-- Route: Pico GP28 → resistor → down to y=515 → right past bus → up to P1 DIN -->
+<!-- GP28 → 330Ω resistor (horizontal from Pico) -->
+<line x1="21" y1="229"  x2="170" y2="229" stroke="#00cfff" stroke-width="3" filter="url(#fd)" stroke-dasharray="8,4"/>
 <rect x="170" y="222"   width="34" height="14" rx="3" fill="#181806" stroke="#ffd700" stroke-width="1.5"/>
 <text x="187" y="232"   text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7">330Ω</text>
-<line x1="204" y1="229" x2="346" y2="229" stroke="#00cfff" stroke-width="2" filter="url(#fd)"/>
-<line x1="346" y1="229" x2="346" y2="68"  stroke="#00cfff" stroke-width="2" filter="url(#fd)"/>
-<line x1="346" y1="68"  x2="395" y2="68"  stroke="#00cfff" stroke-width="2" filter="url(#fd)"/>
-<!-- P1 DOUT → P2 DIN -->
-<polyline points="955,68 978,68 978,166 395,166"   fill="none" stroke="#00cfff" stroke-width="2"   opacity=".85"/>
+<!-- resistor → down below panels → right past bus → up to P1 LEFT DIN -->
+<polyline points="204,229 240,229 240,515 395,515 395,68" fill="none" stroke="#00cfff" stroke-width="3" filter="url(#fd)" stroke-dasharray="8,4"/>
+<!-- step label -->
+<rect x="225" y="504" width="48" height="14" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="249" y="514" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="7" font-weight="700">1 GP28</text>
+<!-- P1 DOUT → P2 DIN (right side routing) -->
+<polyline points="955,68 990,68 990,166 395,166" fill="none" stroke="#00cfff" stroke-width="3" stroke-dasharray="8,4"/>
+<rect x="975" y="107" width="20" height="16" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="985" y="118" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="9" font-weight="700">2</text>
 <!-- P2 DOUT → P3 DIN -->
-<polyline points="955,166 982,166 982,264 395,264"  fill="none" stroke="#00cfff" stroke-width="2"  opacity=".7"/>
+<polyline points="955,166 994,166 994,264 395,264" fill="none" stroke="#00cfff" stroke-width="3" stroke-dasharray="8,4"/>
+<rect x="979" y="205" width="20" height="16" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="989" y="216" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="9" font-weight="700">3</text>
 <!-- P3 DOUT → P4 DIN -->
-<polyline points="955,264 986,264 986,362 395,362"  fill="none" stroke="#00cfff" stroke-width="2"  opacity=".55"/>
+<polyline points="955,264 998,264 998,362 395,362" fill="none" stroke="#00cfff" stroke-width="3" stroke-dasharray="8,4"/>
+<rect x="983" y="303" width="20" height="16" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="993" y="314" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="9" font-weight="700">4</text>
 <!-- P4 DOUT → P5 DIN -->
-<polyline points="955,362 990,362 990,460 395,460"  fill="none" stroke="#00cfff" stroke-width="2"  opacity=".4"/>
-<!-- data chain arrow labels -->
-<text x="985" y="120"  fill="#00cfff" font-family="Share Tech Mono" font-size="6.5" opacity=".7">DOUT→DIN</text>
-<text x="989" y="218"  fill="#00cfff" font-family="Share Tech Mono" font-size="6.5" opacity=".6">DOUT→DIN</text>
-<text x="993" y="316"  fill="#00cfff" font-family="Share Tech Mono" font-size="6.5" opacity=".5">DOUT→DIN</text>
-<text x="997" y="414"  fill="#00cfff" font-family="Share Tech Mono" font-size="6.5" opacity=".4">DOUT→DIN</text>
+<polyline points="955,362 1002,362 1002,460 395,460" fill="none" stroke="#00cfff" stroke-width="3" stroke-dasharray="8,4"/>
+<rect x="987" y="401" width="20" height="16" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="997" y="412" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="9" font-weight="700">5</text>
 
 <!-- ── LEGEND ── -->
 <rect x="18" y="518" width="970" height="100" rx="5" fill="#080c12" stroke="#1e2d40"/>
@@ -308,9 +314,9 @@
 <circle cx="44"  cy="572" r="5" fill="#c8d8e8"/>
 <text  x="56"  y="576" fill="#a0b4c8" font-family="Share Tech Mono" font-size="7.5">GND from power bus</text>
 <circle cx="44"  cy="590" r="5" fill="#00cfff"/>
-<text  x="56"  y="594" fill="#a0b4c8" font-family="Share Tech Mono" font-size="7.5">DATA (DIN / DOUT chain)</text>
+<text  x="56"  y="594" fill="#a0b4c8" font-family="Share Tech Mono" font-size="7.5">DATA chain (cyan dashed): GP28 → P1 → P2 → P3 → P4 → P5  ·  numbered 1-5</text>
 <rect  x="244" y="548" width="18" height="10" rx="2" fill="#181806" stroke="#ffd700" stroke-width="1.2"/>
-<text  x="270" y="558" fill="#ffd700" font-family="Share Tech Mono" font-size="7.5">330Ω resistor on GP0 data line</text>
+<text  x="270" y="558" fill="#ffd700" font-family="Share Tech Mono" font-size="7.5">330Ω resistor on GP28 data line</text>
 <line  x1="244" y1="573" x2="274" y2="573" stroke="#ff4444" stroke-width="1.5" stroke-dasharray="4,2"/>
 <text  x="282" y="577" fill="#a0b4c8" font-family="Share Tech Mono" font-size="7.5">Dashed = Pico W VSYS + GND from bus</text>
 <circle cx="244" cy="591" r="4" fill="#1a1a2a" stroke="#4a4a6a" stroke-width="1"/>
@@ -340,7 +346,7 @@
     <div class="wl"><div class="dot" style="background:#ff8c00"></div>⚠ Unplug USB when powered via VSYS</div>
   </div>
   <div class="card"><div class="cn">STEP 04</div><div class="ct">Data Chain (Pico → P1 → P2 → ... → P5)</div>
-    <div class="wl"><div class="dot" style="background:#00cfff"></div>Pico GP0 → 330Ω resistor → Panel 1 LEFT DIN</div>
+    <div class="wl"><div class="dot" style="background:#00cfff"></div>Pico GP28 → 330Ω resistor → Panel 1 LEFT DIN</div>
     <div class="wl"><div class="dot" style="background:#00cfff"></div>Panel 1 RIGHT DOUT → Panel 2 LEFT DIN</div>
     <div class="wl"><div class="dot" style="background:#00cfff"></div>Repeat P2→P3, P3→P4, P4→P5 using pigtail cables</div>
   </div>
@@ -400,7 +406,7 @@
 <rect x="8"  y="203" width="13" height="9" rx="2" fill="#1e2d40" stroke="#3a5070"/>
 <text x="25" y="210" fill="#c8d8e8" font-family="Share Tech Mono" font-size="6.5">GND  p38</text>
 <rect x="8"  y="225" width="13" height="9" rx="2" fill="#1e2d40" stroke="#3a5070"/>
-<text x="25" y="232" fill="#00cfff" font-family="Share Tech Mono" font-size="6.5">GP0  p1</text>
+<text x="25" y="232" fill="#00cfff" font-family="Share Tech Mono" font-size="6.5">GP28 p34</text>
 <rect x="52" y="285" width="54" height="26" rx="3" fill="#0a1520" stroke="#1e3a5a"/>
 <text x="79" y="302" text-anchor="middle" fill="#1e3050" font-family="Share Tech Mono" font-size="7">WiFi</text>
 <rect x="64" y="322" width="30" height="11" rx="2" fill="#1e2d40" stroke="#2a4060"/>
@@ -577,21 +583,31 @@
 <polyline points="330,468 330,512 654,512 654,468" fill="none" stroke="#44aacc" stroke-width="2"/>
 <text x="485" y="505" text-anchor="middle" fill="#cc6600" font-family="Share Tech Mono" font-size="6.5">5V injection  ↓ → ↑</text>
 
-<!-- DATA CHAIN (same as Schema 1) -->
-<line x1="21" y1="229"  x2="170" y2="229" stroke="#00cfff" stroke-width="2" filter="url(#fd2)"/>
+<!-- DATA CHAIN — routed left of bus to avoid crossing behind power lines -->
+<!-- GP28 → 330Ω resistor (horizontal from Pico) -->
+<line x1="21" y1="229"  x2="170" y2="229" stroke="#00cfff" stroke-width="3" filter="url(#fd2)" stroke-dasharray="8,4"/>
 <rect x="170" y="222"   width="34" height="14" rx="3" fill="#181806" stroke="#ffd700" stroke-width="1.5"/>
 <text x="187" y="232"   text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7">330Ω</text>
-<line x1="204" y1="229" x2="346" y2="229" stroke="#00cfff" stroke-width="2" filter="url(#fd2)"/>
-<line x1="346" y1="229" x2="346" y2="68"  stroke="#00cfff" stroke-width="2" filter="url(#fd2)"/>
-<line x1="346" y1="68"  x2="395" y2="68"  stroke="#00cfff" stroke-width="2" filter="url(#fd2)"/>
-<polyline points="955,68  978,68  978,166 395,166"  fill="none" stroke="#00cfff" stroke-width="2"  opacity=".85"/>
-<polyline points="955,166 982,166 982,264 395,264"  fill="none" stroke="#00cfff" stroke-width="2"  opacity=".7"/>
-<polyline points="955,264 986,264 986,362 395,362"  fill="none" stroke="#00cfff" stroke-width="2"  opacity=".55"/>
-<polyline points="955,362 990,362 990,460 395,460"  fill="none" stroke="#00cfff" stroke-width="2"  opacity=".4"/>
-<text x="985" y="120"  fill="#00cfff" font-family="Share Tech Mono" font-size="6.5" opacity=".7">DOUT→DIN</text>
-<text x="989" y="218"  fill="#00cfff" font-family="Share Tech Mono" font-size="6.5" opacity=".6">DOUT→DIN</text>
-<text x="993" y="316"  fill="#00cfff" font-family="Share Tech Mono" font-size="6.5" opacity=".5">DOUT→DIN</text>
-<text x="997" y="414"  fill="#00cfff" font-family="Share Tech Mono" font-size="6.5" opacity=".4">DOUT→DIN</text>
+<!-- resistor → down below panels → right past bus → up to P1 LEFT DIN -->
+<polyline points="204,229 240,229 240,515 395,515 395,68" fill="none" stroke="#00cfff" stroke-width="3" filter="url(#fd2)" stroke-dasharray="8,4"/>
+<rect x="225" y="504" width="48" height="14" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="249" y="514" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="7" font-weight="700">1 GP28</text>
+<!-- P1 DOUT → P2 DIN -->
+<polyline points="955,68 990,68 990,166 395,166" fill="none" stroke="#00cfff" stroke-width="3" stroke-dasharray="8,4"/>
+<rect x="975" y="107" width="20" height="16" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="985" y="118" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="9" font-weight="700">2</text>
+<!-- P2 DOUT → P3 DIN -->
+<polyline points="955,166 994,166 994,264 395,264" fill="none" stroke="#00cfff" stroke-width="3" stroke-dasharray="8,4"/>
+<rect x="979" y="205" width="20" height="16" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="989" y="216" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="9" font-weight="700">3</text>
+<!-- P3 DOUT → P4 DIN -->
+<polyline points="955,264 998,264 998,362 395,362" fill="none" stroke="#00cfff" stroke-width="3" stroke-dasharray="8,4"/>
+<rect x="983" y="303" width="20" height="16" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="993" y="314" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="9" font-weight="700">4</text>
+<!-- P4 DOUT → P5 DIN -->
+<polyline points="955,362 1002,362 1002,460 395,460" fill="none" stroke="#00cfff" stroke-width="3" stroke-dasharray="8,4"/>
+<rect x="987" y="401" width="20" height="16" rx="3" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width=".8"/>
+<text x="997" y="412" text-anchor="middle" fill="#00cfff" font-family="Orbitron" font-size="9" font-weight="700">5</text>
 
 <!-- LEGEND -->
 <rect x="18" y="530" width="970" height="136" rx="5" fill="#080c12" stroke="#1e2d40"/>
