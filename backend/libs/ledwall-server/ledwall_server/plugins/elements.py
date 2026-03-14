@@ -7,18 +7,9 @@ They don't tick or manage state — they just draw.
 from abc import ABC, abstractmethod
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
 
+from ledwall_server.plugins.fonts import render_text
 from ledwall_server.plugins.icons import IconSize, get_icon
-
-_FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
-
-
-def _load_font(size: int = 8) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
-    try:
-        return ImageFont.truetype(_FONT_PATH, size)
-    except OSError:
-        return ImageFont.load_default()
 
 
 class Element(ABC):
@@ -56,11 +47,9 @@ class TextElement(Element):
     def draw(self, canvas: np.ndarray) -> None:
         if not self.text:
             return
-        img = Image.new("RGB", (self.w, self.h), (0, 0, 0))
-        draw = ImageDraw.Draw(img)
-        font = _load_font(self.font_size)
-        draw.text((0, 0), self.text, fill=self.color, font=font)
-        rendered = np.array(img, dtype=np.uint8)
+        rendered = render_text(
+            self.text, self.w, self.h, self.color, font_size=self.font_size
+        )
         self._blit(canvas, rendered)
 
     def _blit(self, canvas: np.ndarray, rendered: np.ndarray) -> None:
