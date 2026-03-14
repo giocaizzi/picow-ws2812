@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 from matplotlib.collections import PatchCollection
-from matplotlib.patches import Circle
+from matplotlib.patches import Circle, Rectangle
 
 if TYPE_CHECKING:
     from ledwall_server.plugins.base import BasePlugin
@@ -52,14 +52,27 @@ class LedWallVisualizer:
         title: str,
     ) -> tuple[plt.Figure, plt.Axes, PatchCollection]:
         """Set up figure with circular LED patches on a dark background."""
+        pad = 0.3
         fig, ax = plt.subplots()
         ax.set_title(title, color="white")
         ax.set_facecolor("black")
         fig.set_facecolor("black")
-        ax.set_xlim(0, width)
-        ax.set_ylim(height, 0)
+        ax.set_xlim(-pad, width + pad)
+        ax.set_ylim(height + pad, -pad)
         ax.set_aspect("equal")
         ax.axis("off")
+
+        # Panel outline
+        ax.add_patch(
+            Rectangle(
+                (0, 0),
+                width,
+                height,
+                linewidth=1,
+                edgecolor=(0.25, 0.25, 0.25),
+                facecolor="none",
+            )
+        )
 
         patches = [
             Circle((col + 0.5, row + 0.5), self.dot_radius)
