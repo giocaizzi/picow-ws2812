@@ -16,7 +16,7 @@ picow_ws2812_devtools = { path = "libs/picow-ws2812-devtools", develop = true, o
 dev = ["picow_ws2812_devtools"]
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.1.1"
+pytest = ">=8.1.1,<10.0.0"
 pytest-cov = "^4.1.0"
 
 [tool.poetry.group.dev.dependencies]
