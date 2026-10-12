@@ -51,16 +51,7 @@ exclude = [
 
 [tool.mypy]
 python_version = "3.10"
-files = ["libs", "main.py", "ledwall.py"]
+files = ["libs", "main.py"]
 # MicroPython modules (machine, rp2, utime) have no host stubs
 ignore_missing_imports = true
 
-# Pre-existing type debt (BaseObject | Collection unions, stale ledwall.py script); fix per module and drop.
-[[tool.mypy.overrides]]
-module = [
-    "ledwall",
-    "picow_ws2812_core.base",
-    "picow_ws2812_core.collections.group",
-    "picow_ws2812_driver.ledwall",
-]
-ignore_errors = true
