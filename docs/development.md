@@ -18,7 +18,7 @@ uv run pre-commit install
 ## Checks
 
 ```sh
-make check         # = make lint (ruff check + ruff format --check) + make test (pytest)
+make check         # = make lint (ruff check + ruff format --check + mypy) + make test (pytest)
 ```
 
 CI (`.github/workflows/ci.yml`) runs `make check` in the `check` job, after a gitleaks `secrets` job. No hardware is involved.
