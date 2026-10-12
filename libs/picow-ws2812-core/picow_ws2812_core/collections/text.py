@@ -8,12 +8,12 @@ class Text(Collection):
     """Text string.
 
     A Text object is an easy representation of a text string.
-    It contains the text, the color and a list of chars objects.
+    It contains the text, the color and one Char object per character
+    (stored in `objects`).
 
     Attributes:
         text (str): text
         color (Tuple[int, int, int]): color
-        chars (List[Char]): list of chars
     """
 
     def __init__(

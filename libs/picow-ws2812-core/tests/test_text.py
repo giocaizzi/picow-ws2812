@@ -6,11 +6,6 @@ from picow_ws2812_core.collections.text import Text
 from picow_ws2812_core.objects.char import Char
 from tests.conftest import TEST_COLOR, TEST_STRINGS
 
-# Text moved to the Collection API; tests still read `.chars` (#19)
-pytestmark = pytest.mark.xfail(
-    strict=True, raises=AttributeError, reason="stale tests, see #19"
-)
-
 
 @pytest.mark.parametrize("text", TEST_STRINGS)
 def test_text_initialization(text):
@@ -22,7 +17,7 @@ def test_text_initialization(text):
     assert text_obj.color == TEST_COLOR
 
     # hello has same characters
-    assert len(text_obj.chars) == len(text)
+    assert len(text_obj.objects) == len(text)
 
 
 @pytest.mark.parametrize("text", TEST_STRINGS)
@@ -32,7 +27,7 @@ def test_text_char(text):
 
     # each element of chars has the correct attributes
     # inherit from Text init
-    for char, strchar in zip(text_obj.chars, text):
+    for char, strchar in zip(text_obj.objects, text):
         assert isinstance(char, Char)
         # chars are written only uppercase
         assert char.char == strchar.upper()
@@ -44,7 +39,7 @@ def test_text_pixel(text):
     """Test the encoding of a Text object"""
     text_obj = Text(text, TEST_COLOR)
 
-    for char in text_obj.chars:
+    for char in text_obj.objects:
         # each char is made of pixels
         assert len(char.pixels) > 0
         for pixel in char.pixels:
@@ -59,14 +54,14 @@ def test_text_movement():
 
     # save initial positions
     initial_positions = [
-        (pixel.x, pixel.y) for char in text.chars for pixel in char.pixels
+        (pixel.x, pixel.y) for char in text.objects for pixel in char.pixels
     ]
     # move text
     dx, dy = 1, 1
     text.move(dx, dy)
 
     for (initial_x, initial_y), pixel in zip(
-        initial_positions, [pixel for char in text.chars for pixel in char.pixels]
+        initial_positions, [pixel for char in text.objects for pixel in char.pixels]
     ):
         assert pixel.x == initial_x + dx
         assert pixel.y == initial_y + dy
