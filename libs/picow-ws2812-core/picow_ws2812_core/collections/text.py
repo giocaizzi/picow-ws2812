@@ -48,7 +48,7 @@ class Text(Collection):
         Returns:
             List[Char]: list of Char objects
         """
-        chars = []
+        chars: List[BaseObject] = []
         for i, char in enumerate(self.text):
             chars.append(
                 Char(char=char, color=self.color, x0=x0, y0=y0, char_width_offset=i)

@@ -15,6 +15,7 @@ dev = [
     "ipympl>=0.9.6,<0.10",
     "picow-ws2812-devtools",
     "ruff",
+    "mypy>=2.4.0",
 ]
 
 [tool.uv]
@@ -47,3 +48,19 @@ exclude = [
     "libs/**/tests/*",
     "notebooks/*",
 ]
+
+[tool.mypy]
+python_version = "3.10"
+files = ["libs", "main.py", "ledwall.py"]
+# MicroPython modules (machine, rp2, utime) have no host stubs
+ignore_missing_imports = true
+
+# Pre-existing type debt (BaseObject | Collection unions, stale ledwall.py script); fix per module and drop.
+[[tool.mypy.overrides]]
+module = [
+    "ledwall",
+    "picow_ws2812_core.base",
+    "picow_ws2812_core.collections.group",
+    "picow_ws2812_driver.ledwall",
+]
+ignore_errors = true
