@@ -2,7 +2,7 @@
 
 import time
 
-from picow_ws2812_core.base import StaticSequence, StaticView
+from picow_ws2812_core.base import StaticSequence, StaticView, iter_pixels
 
 from picow_ws2812_driver.indexer import Indexer
 from picow_ws2812_driver.neopixel import Neopixel
@@ -50,15 +50,14 @@ class LedWall(Neopixel):
                 Defaults to 1.
         """
         for obj in view.objects:
-            for pixel, color in obj.pixels:
-                for x, y in pixel:
-                    try:
-                        self.set_pixel(self.indexer.get_pixel_number(x, y), color)
-                    # ignore out of range pixels
-                    except IndexError:
-                        pass
-                    except Exception as e:
-                        raise e
+            for pixel in iter_pixels(obj):
+                try:
+                    self.set_pixel(
+                        self.indexer.get_pixel_number(pixel.x, pixel.y), pixel.color
+                    )
+                # ignore out of range pixels
+                except IndexError:
+                    pass
         self.show()
         time.sleep(self.wait)
         self.clear()

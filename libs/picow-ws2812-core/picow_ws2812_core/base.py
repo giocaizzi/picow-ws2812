@@ -1,6 +1,6 @@
 """base classes."""
 
-from typing import List, Tuple, Union
+from typing import Iterator, List, Sequence, Tuple, Union
 
 import numpy as np
 
@@ -144,13 +144,13 @@ class Collection:
     A collection functions as a single object.
     """
 
-    objects: List[BaseObject] = []
+    objects: List[Union[BaseObject, "Collection"]] = []
 
     def __init__(self):
         """Create a ComplexObject object."""
         self.objects = []
 
-    def add_object(self, obj: BaseObject) -> None:
+    def add_object(self, obj: Union[BaseObject, "Collection"]) -> None:
         """Add an object to the complex object.
 
         Args:
@@ -158,7 +158,7 @@ class Collection:
         """
         self.objects.append(obj)
 
-    def add_objects(self, objects: List[BaseObject]) -> None:
+    def add_objects(self, objects: Sequence[Union[BaseObject, "Collection"]]) -> None:
         """Add objects to the complex object.
 
         Args:
@@ -194,6 +194,17 @@ class Collection:
         return f"{self.__class__.__name__}(bbox={self.bbox})"
 
 
+def iter_pixels(obj: Union[BaseObject, Collection]) -> Iterator[Pixel]:
+    """Yield every pixel of an object or, recursively, of a collection."""
+    if isinstance(obj, Collection):
+        for subobj in obj.objects:
+            yield from iter_pixels(subobj)
+    elif isinstance(obj, BaseObject):
+        yield from obj.pixels
+    else:
+        raise ValueError(f"Invalid object type {type(obj)}")
+
+
 class StaticView:
     """Base class for a view.
 
@@ -226,16 +237,9 @@ class StaticView:
         self, grid: np.ndarray, obj: Union[BaseObject, Collection]
     ):
         """Render a single object or collection of objects."""
-        if issubclass(type(obj), (Collection,)):
-            for subobj in obj.objects:
-                self._render_object_in_grid(grid, subobj)
-        elif issubclass(type(obj), (BaseObject,)):
-            for pixel in obj.pixels:
-                x, y, color_tuple = pixel.x, pixel.y, pixel.color
-                if 0 <= y < self.nrows and 0 <= x < self.ncols:
-                    grid[y, x] = color_tuple
-        else:
-            raise ValueError(f"Invalid object type {type(obj)}")
+        for pixel in iter_pixels(obj):
+            if 0 <= pixel.y < self.nrows and 0 <= pixel.x < self.ncols:
+                grid[pixel.y, pixel.x] = pixel.color
 
 
 class StaticSequence:
