@@ -33,50 +33,18 @@ repos:
   #   rev: 1.7.9
   #   hooks:
   #     - id: bandit
-  # autoflake : removes unused imports and unused variables
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.3.1
+  # ruff: linter (incl. isort) and formatter, configured in pyproject.toml
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.0
     hooks:
-      - id: autoflake
-  # ------------------------------
-  # isort: sorts imports
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-  # ------------------------------
-  # Black: code formatter
-  - repo: https://github.com/psf/black
-    rev: 24.4.2
-    hooks:
-      - id: black
-      # Black Jupyter
-      - id: black-jupyter
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
   # blacken-docs: run black in python codeblocks
   - repo: https://github.com/adamchainz/blacken-docs
     rev: 1.18.0
     hooks:
       - id: blacken-docs
-  # ------------------------------
-  # mypy
-  # ------------------------------
-  # Flake8
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.1.0
-    hooks:
-      - id: flake8
-        additional_dependencies:
-          # read config from pyproject.toml
-          - flake8-pyproject
-          # - flake8-simplify # help simplify code
-          # - flake8-bugbear # finds bugs
-          # - flake8-docstrings
-          - flake8-rst-docstrings # rst docstrings
-          # - flake8-spellcheck # spellcheck docstrings
-          # - flake8-datetimez # no naive datetime
-          # - flake8-annotations-complexity # check annotations complexity
-          # - flake8-expression-complexity # check expression complexity
-          # - flake8-black # enforce black formatting
   # ------------------------------
   # Markdown
   # ------------------------------
@@ -86,11 +54,9 @@ repos:
     hooks:
       - id: mdformat
   # ------------------------------
-  # poetry
+  # uv
   # ------------------------------
-  - repo: https://github.com/python-poetry/poetry
-    rev: 1.8.0
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.11.2
     hooks:
-      - id: poetry-check
-      - id: poetry-lock
-      - id: poetry-install
+      - id: uv-lock

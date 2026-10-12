@@ -1,14 +1,12 @@
-[tool.poetry]
+[project]
 name = "picow-ws2812-driver"
 version = "0.1.0a1"
 description = ""
-authors = ["Giorgio Caizzi <giocaizzi@gmail.com>"]
+authors = [{ name = "Giorgio Caizzi", email = "giocaizzi@gmail.com" }]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-matplotlib = "^3.10.0"
+requires-python = ">=3.10"
+dependencies = ["matplotlib>=3.10.0,<4"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

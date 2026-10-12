@@ -1,13 +1,11 @@
-[tool.poetry]
+[project]
 name = "picow-ws2812-core"
 version = "0.1.0a8"
 description = ""
-authors = ["Giorgio Caizzi <giocaizzi@gmail.com>"]
+authors = [{ name = "Giorgio Caizzi", email = "giocaizzi@gmail.com" }]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.9"
+requires-python = ">=3.9"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
