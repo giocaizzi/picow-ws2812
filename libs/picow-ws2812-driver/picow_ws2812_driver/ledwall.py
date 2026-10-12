@@ -3,6 +3,7 @@
 import time
 
 from picow_ws2812_core.base import StaticSequence, StaticView
+
 from picow_ws2812_driver.indexer import Indexer
 from picow_ws2812_driver.neopixel import Neopixel
 

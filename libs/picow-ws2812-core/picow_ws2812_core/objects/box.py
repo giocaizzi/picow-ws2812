@@ -4,7 +4,6 @@ from ..base import BaseObject, Pixel
 
 
 class Box(BaseObject):
-
     def __init__(self, x0: int, y0: int, x1: int, y1: int, color: Tuple[int, int, int]):
         super().__init__()
         self._create_pixels(x0, y0, x1, y1, color)

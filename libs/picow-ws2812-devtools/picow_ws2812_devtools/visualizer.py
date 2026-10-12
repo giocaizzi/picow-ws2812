@@ -36,8 +36,8 @@ class LedWallVisualizer:
 
         def update(frame):
             im.set_data(frame)
-            return im,  # Return a list containing the im object
+            return (im,)  # Return a list containing the im object
 
-        ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)
+        ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)  # noqa: F841
 
         plt.show()
