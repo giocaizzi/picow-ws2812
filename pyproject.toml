@@ -12,7 +12,7 @@ test = ["pytest>=8.1.1,<10.0.0", "pytest-cov>=4.1.0,<5"]
 dev = [
     "pre-commit>=3.7.1,<4",
     "ipykernel>=6.29.5,<7",
-    "ipympl>=0.9.6,<0.10",
+    "ipympl>=0.9.6,<0.11",
     "picow-ws2812-devtools",
     "ruff",
     "mypy>=2.4.0",
