@@ -8,7 +8,6 @@ from pathlib import Path
 
 from ledwall_server.plugins.bitcoin import Bitcoin
 from ledwall_server.plugins.clock import Clock
-from ledwall_server.plugins.effect import ColorCycle, Rainbow, SolidColor
 from ledwall_server.plugins.text import ScrollingText, StaticText
 from ledwall_server.plugins.weather import Weather
 from ledwall_server.renderer import Renderer
@@ -18,9 +17,6 @@ from picow_ws2812_devtools.visualizer import LedWallVisualizer
 _PREVIEWS_DIR = Path(__file__).resolve().parents[3] / "previews"
 
 PLUGIN_REGISTRY: dict[str, tuple[type, dict]] = {
-    "Rainbow": (Rainbow, {"speed": 3}),
-    "ColorCycle": (ColorCycle, {"speed": 5}),
-    "SolidColor": (SolidColor, {"color": [255, 0, 0]}),
     "ScrollingText": (ScrollingText, {"text": "LED WALL", "color": [0, 200, 255]}),
     "StaticText": (StaticText, {"text": "HELLO", "color": [255, 255, 255]}),
     "Clock": (Clock, {"color": [0, 255, 0]}),
@@ -57,13 +53,7 @@ SCENE_REGISTRY: dict[str, dict] = {
         "height": 16,
         "dot_radius": 0.3,
         "layers": lambda: [
-            (
-                _make_weather.__wrapped__(16, 8)
-                if hasattr(_make_weather, "__wrapped__")
-                else _make_weather(16, 8),
-                0,
-                0,
-            ),
+            (_make_weather(16, 8), 0, 0),
             (_make_bitcoin(16, 8), 16, 0),
             (Clock({"color": [0, 255, 0]}, 16, 8), 0, 8),
             (StaticText({"text": "DASH", "color": [255, 200, 0]}, 16, 8), 16, 8),
@@ -81,6 +71,47 @@ SCENE_REGISTRY: dict[str, dict] = {
                 ScrollingText({"text": "LED WALL", "color": [255, 200, 0]}, 16, 8),
                 16,
                 8,
+            ),
+        ],
+    },
+    "FullWall": {
+        "width": 32,
+        "height": 24,
+        "dot_radius": 0.3,
+        "layers": lambda: [
+            # Row 1 (y=0): Weather + Bitcoin
+            (_make_weather(16, 8), 0, 0),
+            (_make_bitcoin(16, 8), 16, 0),
+            # Row 2 (y=8): Clock + Static text
+            (Clock({"color": [0, 255, 0]}, 16, 8), 0, 8),
+            (StaticText({"text": "HELLO", "color": [255, 255, 255]}, 16, 8), 16, 8),
+            # Row 3 (y=16): Scrolling text full width
+            (
+                ScrollingText({"text": "LED WALL", "color": [0, 200, 255]}, 32, 8),
+                0,
+                16,
+            ),
+        ],
+    },
+    "FullWall-Animated": {
+        "width": 32,
+        "height": 24,
+        "dot_radius": 0.3,
+        "layers": lambda: [
+            (_make_weather(16, 8), 0, 0),
+            (_make_bitcoin(16, 8), 16, 0),
+            (Clock({"color": [0, 255, 0]}, 16, 8), 0, 8),
+            (
+                ScrollingText(
+                    {"text": "HELLO WORLD", "color": [255, 200, 0]}, 16, 8
+                ),
+                16,
+                8,
+            ),
+            (
+                ScrollingText({"text": "LED WALL", "color": [0, 200, 255]}, 32, 8),
+                0,
+                16,
             ),
         ],
     },
