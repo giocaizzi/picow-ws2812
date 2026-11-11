@@ -1,0 +1,78 @@
+"""test text module"""
+
+import pytest
+
+from picow_ws2812.core.base import Pixel
+from picow_ws2812.core.collections.text import Text
+from picow_ws2812.core.objects.char import Char
+
+TEST_STRINGS = [
+    "HELLO",
+    "ciao",
+    "12345",
+    "ciao1w323vS",
+    "BAGUS!",
+]
+TEST_COLOR = (0, 255, 0)
+
+
+@pytest.mark.parametrize("text", TEST_STRINGS)
+def test_text_initialization(text):
+    """Test the initialization of a Text object"""
+    text_obj = Text(text, TEST_COLOR)
+
+    # check if the text object has the correct attributes
+    assert text_obj.text == text
+    assert text_obj.color == TEST_COLOR
+
+    # hello has same characters
+    assert len(text_obj.chars) == len(text)
+
+
+@pytest.mark.parametrize("text", TEST_STRINGS)
+def test_text_char(text):
+    """Test the encoding of a Text object"""
+    text_obj = Text(text, TEST_COLOR)
+
+    # each element of chars has the correct attributes
+    # inherit from Text init
+    for char, strchar in zip(text_obj.chars, text, strict=True):
+        assert isinstance(char, Char)
+        # chars are written only uppercase
+        assert char.char == strchar.upper()
+        assert char.color == TEST_COLOR
+
+
+@pytest.mark.parametrize("text", TEST_STRINGS)
+def test_text_pixel(text):
+    """Test the encoding of a Text object"""
+    text_obj = Text(text, TEST_COLOR)
+
+    for char in text_obj.chars:
+        # each char is made of pixels
+        assert len(char.pixels) > 0
+        for pixel in char.pixels:
+            assert isinstance(pixel, Pixel)
+            # each pixel has the correct color
+            assert pixel.color == TEST_COLOR
+
+
+def test_text_movement():
+    """Test the movement of a Text object"""
+    text = Text("HELLO", TEST_COLOR)
+
+    # save initial positions
+    initial_positions = [
+        (pixel.x, pixel.y) for char in text.chars for pixel in char.pixels
+    ]
+    # move text
+    dx, dy = 1, 1
+    text.move(dx, dy)
+
+    for (initial_x, initial_y), pixel in zip(
+        initial_positions,
+        [pixel for char in text.chars for pixel in char.pixels],
+        strict=True,
+    ):
+        assert pixel.x == initial_x + dx
+        assert pixel.y == initial_y + dy

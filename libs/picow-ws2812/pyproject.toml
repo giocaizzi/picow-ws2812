@@ -1,0 +1,14 @@
+[project]
+name = "picow-ws2812"
+version = "0.1.0"
+description = "MicroPython library for controlling WS2812 LED strips on Raspberry Pi Pico W"
+authors = [{ name = "Giorgio Caizzi", email = "giocaizzi@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

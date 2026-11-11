@@ -79,6 +79,12 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# devtools preview outputs (uv run preview)
+previews/
+
+# local datasheets
+docs/guides/*.pdf
+
 # IPython
 profile_default/
 ipython_config.py

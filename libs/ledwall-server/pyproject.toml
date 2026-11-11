@@ -1,0 +1,17 @@
+[project]
+name = "ledwall-server"
+version = "0.1.0"
+description = "Pi5 LED wall server — renders frames and streams via UDP to Pico W"
+authors = [{ name = "Giorgio Caizzi", email = "giocaizzi@gmail.com" }]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.34",
+    "pydantic-settings>=2.7",
+    "numpy>=1.24",
+    "pillow>=11.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

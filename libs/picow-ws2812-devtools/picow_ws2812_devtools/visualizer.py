@@ -1,43 +1,164 @@
-"""visualizer module."""
+"""LED wall visualizer — preview plugins and scenes in matplotlib."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.animation import FuncAnimation
-from picow_ws2812_core import StaticSequence, StaticView
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Circle, Rectangle
 
-#
+if TYPE_CHECKING:
+    from ledwall_server.plugins.base import BasePlugin
+    from ledwall_server.renderer import Renderer
 
 
 class LedWallVisualizer:
-    def __init__(self, nrows: int, ncols: int):
-        """Initialize the LED wall simulator.
+    """Preview LED wall plugins and composed scenes.
 
-        Args:
-            nrows (int): Number of rows.
-            ncols (int): Number of columns.
-            grid (np.ndarray): Grid of pixels.
-        """
-        self.nrows = nrows
-        self.ncols = ncols
+    Each LED is rendered as a circle on a dark background,
+    simulating the look of a real LED panel.
 
-    def render_view(self, view: StaticView):
-        """Render a view."""
+    Usage::
+
+        uv run preview Rainbow
+        uv run preview Rainbow --gif --frames 60
+
+    Args:
+        width: Number of horizontal LEDs.
+        height: Number of vertical LEDs.
+        dot_radius: Radius of each LED dot in cell units.
+            Each cell is 1x1, so max radius is 0.5.
+    """
+
+    def __init__(
+        self,
+        width: int = 32,
+        height: int = 24,
+        dot_radius: float = 0.4,
+    ):
+        if dot_radius <= 0 or dot_radius > 0.5:
+            raise ValueError("dot_radius must be in (0, 0.5]")
+        self.width = width
+        self.height = height
+        self.dot_radius = dot_radius
+
+    def _create_led_plot(
+        self,
+        width: int,
+        height: int,
+        title: str,
+    ) -> tuple[plt.Figure, plt.Axes, PatchCollection]:
+        """Set up figure with circular LED patches on a dark background."""
+        pad = 0.3
         fig, ax = plt.subplots()
-        self._render_grid(ax, view.get_grid())
+        ax.set_title(title, color="white")
+        ax.set_facecolor("black")
+        fig.set_facecolor("black")
+        ax.set_xlim(-pad, width + pad)
+        ax.set_ylim(height + pad, -pad)
+        ax.set_aspect("equal")
+        ax.axis("off")
 
-    def _render_grid(self, ax, grid):
-        """Render a grid."""
-        ax.imshow(grid)
+        # Panel outline
+        ax.add_patch(
+            Rectangle(
+                (0, 0),
+                width,
+                height,
+                linewidth=1,
+                edgecolor=(0.25, 0.25, 0.25),
+                facecolor="none",
+            )
+        )
 
-    def render_sequence(self, sequence: StaticSequence, interval: int = 500):
-        """Render a sequence."""
-        fig, ax = plt.subplots()
-        frames = sequence.get_frames()
-        im = ax.imshow(frames[0])
+        patches = [
+            Circle((col + 0.5, row + 0.5), self.dot_radius)
+            for row in range(height)
+            for col in range(width)
+        ]
+        collection = PatchCollection(patches, match_original=False)
+        collection.set_edgecolor("none")
+        collection.set_facecolor(np.zeros((height * width, 3)))  # type: ignore[arg-type]
+        ax.add_collection(collection)
 
-        def update(frame):
-            im.set_data(frame)
-            return (im,)  # Return a list containing the im object
+        return fig, ax, collection
 
-        ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=interval)  # noqa: F841
+    @staticmethod
+    def _frame_to_colors(frame: np.ndarray) -> np.ndarray:
+        """Convert (H, W, 3) uint8 frame to (H*W, 4) RGBA float colors."""
+        rgb = frame.reshape(-1, 3).astype(np.float64) / 255.0
+        alpha = np.ones((rgb.shape[0], 1))
+        return np.hstack([rgb, alpha])
 
-        plt.show()
+    def _render_single_frame(
+        self,
+        plugin: BasePlugin | None = None,
+        renderer: Renderer | None = None,
+        layers: list[tuple[BasePlugin, int, int]] | None = None,
+    ) -> tuple[np.ndarray, int, int]:
+        """Tick once and return (frame, width, height)."""
+        if renderer is not None and layers is not None:
+            for p, _, _ in layers:
+                p.tick()
+            return renderer.compose(layers), self.width, self.height
+        if plugin is not None:
+            plugin.tick()
+            return plugin.render(), plugin.width, plugin.height
+        return (
+            np.zeros((self.height, self.width, 3), dtype=np.uint8),
+            self.width,
+            self.height,
+        )
+
+    def save_snapshot(
+        self,
+        path: str,
+        plugin: BasePlugin | None = None,
+        renderer: Renderer | None = None,
+        layers: list[tuple[BasePlugin, int, int]] | None = None,
+        title: str = "Snapshot",
+    ) -> None:
+        """Render a single frame and save as PNG."""
+        frame, width, height = self._render_single_frame(plugin, renderer, layers)
+        fig, _, collection = self._create_led_plot(width, height, title)
+        collection.set_facecolor(self._frame_to_colors(frame))  # type: ignore[arg-type]
+        fig.savefig(path, facecolor="black", bbox_inches="tight", dpi=150)
+        plt.close(fig)
+
+    def save_animation(
+        self,
+        path: str,
+        plugin: BasePlugin | None = None,
+        renderer: Renderer | None = None,
+        layers: list[tuple[BasePlugin, int, int]] | None = None,
+        frames: int = 100,
+        interval: int = 33,
+        title: str = "Animation",
+    ) -> None:
+        """Render an animation and save as GIF."""
+        if plugin is not None:
+            width, height = plugin.width, plugin.height
+        else:
+            width, height = self.width, self.height
+
+        fig, _, collection = self._create_led_plot(width, height, title)
+
+        def update(_frame_num: int):
+            if renderer is not None and layers is not None:
+                for p, _, _ in layers:
+                    p.tick()
+                frame = renderer.compose(layers)
+            elif plugin is not None:
+                plugin.tick()
+                frame = plugin.render()
+            else:
+                frame = np.zeros((height, width, 3), dtype=np.uint8)
+            collection.set_facecolor(self._frame_to_colors(frame))  # type: ignore[arg-type]
+            return (collection,)
+
+        anim = FuncAnimation(fig, update, frames=frames, interval=interval)
+        anim.save(path, writer="pillow")
+        plt.close(fig)
