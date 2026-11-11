@@ -1,18 +1,16 @@
 [project]
-name = "picow-ws2812"
+name = "picow-ws2812-workspace"
 version = "0.1.0"
 description = ""
 authors = [{ name = "giocaizzi", email = "giocaizzi@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["picow-ws2812-core", "picow-ws2812-driver"]
+dependencies = ["picow-ws2812", "ledwall-server"]
 
 [dependency-groups]
 test = ["pytest>=8.1.1,<10.0.0", "pytest-cov>=4.1.0,<8"]
 dev = [
     "pre-commit>=3.7.1,<5",
-    "ipykernel>=6.29.5,<8",
-    "ipympl>=0.9.6,<0.11",
     "picow-ws2812-devtools",
     "ruff",
     "mypy>=2.4.0",
@@ -26,27 +24,26 @@ default-groups = ["dev", "test"]
 members = ["libs/*"]
 
 [tool.uv.sources]
-picow-ws2812-core = { workspace = true }
-picow-ws2812-driver = { workspace = true }
+picow-ws2812 = { workspace = true }
 picow-ws2812-devtools = { workspace = true }
+ledwall-server = { workspace = true }
 
 # test configuration
 [tool.pytest.ini_options]
-addopts = "--cov --cov-report xml --cov-report html --cov-report lcov"
+addopts = "--import-mode=importlib --cov --cov-report xml --cov-report html --cov-report lcov"
 
 
 # format and code quality
 
 [tool.ruff]
-extend-exclude = ["libs/picow-ws2812-core/picow_ws2812_core/fonts.py"]
+extend-exclude = ["libs/picow-ws2812/picow_ws2812/fonts.py"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I"]
 # mirrors the former flake8 excludes; neopixel.py is PIO assembly
 exclude = [
-    "libs/picow-ws2812-driver/picow_ws2812_driver/neopixel.py",
+    "libs/picow-ws2812/picow_ws2812/neopixel.py",
     "libs/**/tests/*",
-    "notebooks/*",
 ]
 
 [tool.mypy]

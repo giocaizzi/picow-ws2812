@@ -12,7 +12,7 @@
 
 ---
 
-A simple MicroPython package to power a WS2812B LED wall matrix, with host-side tooling to preview it.
+A MicroPython package to power a WS2812B LED wall matrix, a host-side server that renders and streams frames to it, preview tooling and a 3D-printed enclosure.
 
 ## Quickstart
 
@@ -23,9 +23,10 @@ make check
 
 ## Features
 
-- `libs/picow-ws2812-driver`: PIO-based driver for the Pico W
-- `libs/picow-ws2812-core`: pure-Python objects, collections and fonts, tested on the host
-- `libs/picow-ws2812-devtools`: matplotlib visualizer used by the notebooks
+- `libs/picow-ws2812`: PIO-based driver, objects and fonts, and a UDP frame receiver for the Pico W
+- `libs/ledwall-server`: FastAPI server that renders plugins and scenes and streams frames to the wall
+- `libs/picow-ws2812-devtools`: visualizer and `preview` CLI for plugins and scenes
+- `3d/`: OpenSCAD enclosure and dimensions reference
 
 ## Documentation
 
